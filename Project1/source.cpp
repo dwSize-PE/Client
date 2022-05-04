@@ -125,7 +125,7 @@ int main() {
 
 	SetConsoleCtrlHandler((PHANDLER_ROUTINE)HandlerRoutine, TRUE);
 
-	CreateThread(0, 0, (LPTHREAD_START_ROUTINE)logx, 0, 0, 0);
+	CreateThread(0, 0, (LPTHREAD_START_ROUTINE)logx, 0, 0, 0); //
 	CreateThread(0, 0, (LPTHREAD_START_ROUTINE)permission, 0, 0, 0);
 	CreateThread(0, 0, (LPTHREAD_START_ROUTINE)memory, 0, 0, 0);
 	CreateThread(0, 0, (LPTHREAD_START_ROUTINE)func, 0, 0, 0);
