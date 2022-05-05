@@ -16,8 +16,6 @@ string sGameStatus;
 
 FILE* f;
 
-DWORD dwSerialHD = 0;
-
 BOOL WINAPI HandlerRoutine(DWORD dwCtrlType)
 {
 	if (dwCtrlType == CTRL_CLOSE_EVENT)
@@ -35,6 +33,7 @@ BOOL WINAPI HandlerRoutine(DWORD dwCtrlType)
 }
 
 void menu() {
+	Sleep(200);
 	if (bConsoleUpdate || clock() - updateTime > 3000) {
 		updateTime = clock();
 		system("cls");
@@ -114,28 +113,36 @@ int main() {
 	szHD[2] = '\\';
 	szHD[3] = 0;
 
-	if (!GetVolumeInformationA(szHD, NULL, 0, &dwSerialHD, NULL, NULL, NULL, 0))
+	DWORD dwSerialHD = 0;
+	if (!GetVolumeInformationA(szHD, NULL, 0, &dwSerialHD, NULL, NULL, NULL, 0)) //pega o serial do disco C:\
 		return 0;
 
-	DWORD dwSerial = 1049092675;
-	string Danilo = to_string(dwSerial);
+	DWORD dwSerialHD_Client[] = { 1049092675 }; //vetor de cadastro de serial
+	string sSerialHD_Client[10]; //vetor de serial convertido para string
+	bool bFind; //variavel de controle
+	
+	for (int = 0; i < dwSerialHD_Client.size(); i++) //até o tamanho do vetor
+		sSerialHD_Client[i] = to_string(dwSerialHD_Client[i]); //vetor de string recebe o SerialHD
 
-	if (Danilo != to_string(dwSerialHD)) {
-		system("pause");
-		return 0;
+	for (int i = 0; i < dwSerialHD_Client.size(); i++) { //até o tamanho do vetor
+		for (int j = 0; j < dwSerialHD_Client.size(); j++) { //for auxiliar para varrer
+			if (sSerialHD_Client[i] == to_string(dwSerialHD_Client[i]) //se haver o serial no vetor..
+			    bFind = true; break;
+		}
+		if (bFind)
+			break;
 	}
 
-	SetConsoleCtrlHandler((PHANDLER_ROUTINE)HandlerRoutine, TRUE);
+	if (bFind) {
+		SetConsoleCtrlHandler((PHANDLER_ROUTINE)HandlerRoutine, TRUE);
 
-	CreateThread(0, 0, (LPTHREAD_START_ROUTINE)logx, 0, 0, 0); //
-	CreateThread(0, 0, (LPTHREAD_START_ROUTINE)permission, 0, 0, 0);
-	CreateThread(0, 0, (LPTHREAD_START_ROUTINE)memory, 0, 0, 0);
-	CreateThread(0, 0, (LPTHREAD_START_ROUTINE)func, 0, 0, 0);
+		CreateThread(0, 0, (LPTHREAD_START_ROUTINE)logx, 0, 0, 0); //
+		CreateThread(0, 0, (LPTHREAD_START_ROUTINE)permission, 0, 0, 0);
+		CreateThread(0, 0, (LPTHREAD_START_ROUTINE)memory, 0, 0, 0);
+		CreateThread(0, 0, (LPTHREAD_START_ROUTINE)func, 0, 0, 0);
 
-	while (true)
-	{
-		Sleep(200);
-		menu();
+		while (true)
+			menu();
 	}
 
 	return 0;
