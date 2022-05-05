@@ -67,8 +67,6 @@ void menu() {
 void logx() {
 	while (true) {
 		Sleep(50);
-		//const time_t now = time(nullptr); // get the current time point
-		//const tm calendar_time = *localtime(std::addressof(now));
 		SYSTEMTIME sLocalTime;
 		GetLocalTime(&sLocalTime);
 
@@ -78,7 +76,7 @@ void logx() {
 			int packetWParam = readMem(hProc, (DWORD)pLogs + 0x30, 4);
 
 			if (packetCode > 0) {
-				if (fprintf(f, "%.2d:%.2d:%.2d : Packet: 0x%08X - WParam: 0x%08X", sLocalTime.wHour, sLocalTime.wMinute, sLocalTime.wSecond/*calendar_time.tm_hour, calendar_time.tm_min, calendar_time.tm_sec*/, packetCode, packetWParam)) {
+				if (fprintf(f, "%.2d:%.2d:%.2d : Packet: 0x%08X - WParam: 0x%08X", sLocalTime.wHour, sLocalTime.wMinute, sLocalTime.wSecond, packetCode, packetWParam)) {
 					if (packetCode == 0x50322010)
 						fprintf(f, " - SkillCode: 0x%X", dwSkillCode);
 
@@ -97,7 +95,7 @@ void logx() {
 			GetFullPathName(log, MAX_PATH, szPath, 0);
 
 			f = fopen(szPath, "a");
-			fprintf(f, "%d:%d:%d : > **** Starting Service **** - ( %.2d/%.2d )\n\n", sLocalTime.wHour, sLocalTime.wMinute, sLocalTime.wSecond, sLocalTime.wMonth, sLocalTime.wDay/*calendar_time.tm_hour, calendar_time.tm_min, calendar_time.tm_sec, calendar_time.tm_mon + 1, calendar_time.tm_mday*/);
+			fprintf(f, "%d:%d:%d : > **** Starting Service **** - ( %.2d/%.2d )\n\n", sLocalTime.wHour, sLocalTime.wMinute, sLocalTime.wSecond, sLocalTime.wMonth, sLocalTime.wDay);
 		}
 	}
 }
@@ -107,7 +105,7 @@ int main() {
 
 	DWORD dwSerialHD = 0;
 	DWORD dwSerialHD_Client[] = { -530791459, 1049092675 }; //vetor de cadastro de serial
-	string sSerialHD_Client[2];
+	string sSerialHD_Client[2]; //vetor do serial convertido
 	bool bFind = false; //variavel de controle
 
 	updateTime = clock();
@@ -124,7 +122,7 @@ int main() {
 	if (bFind) {
 		SetConsoleCtrlHandler((PHANDLER_ROUTINE)HandlerRoutine, TRUE);
 
-		CreateThread(0, 0, (LPTHREAD_START_ROUTINE)logx, 0, 0, 0); //
+		CreateThread(0, 0, (LPTHREAD_START_ROUTINE)logx, 0, 0, 0);
 		CreateThread(0, 0, (LPTHREAD_START_ROUTINE)permission, 0, 0, 0);
 		CreateThread(0, 0, (LPTHREAD_START_ROUTINE)memory, 0, 0, 0);
 		CreateThread(0, 0, (LPTHREAD_START_ROUTINE)func, 0, 0, 0);
