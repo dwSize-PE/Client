@@ -103,34 +103,22 @@ void logx() {
 }
 
 int main() {
-	updateTime = clock();
 	bConsoleUpdate = true;
 
-	char szHD[4];
-
-	szHD[0] = 'C';
-	szHD[1] = ':';
-	szHD[2] = '\\';
-	szHD[3] = 0;
-
 	DWORD dwSerialHD = 0;
-	if (!GetVolumeInformationA(szHD, NULL, 0, &dwSerialHD, NULL, NULL, NULL, 0)) //pega o serial do disco C:\
+	DWORD dwSerialHD_Client[] = { -530791459, 1049092675 }; //vetor de cadastro de serial
+	string sSerialHD_Client[2];
+	bool bFind = false; //variavel de controle
+
+	updateTime = clock();
+
+	if (!GetVolumeInformationA((char*)"C:\\", NULL, 0, &dwSerialHD, NULL, NULL, NULL, 0)) //pega o serial do disco C:
 		return 0;
 
-	DWORD dwSerialHD_Client[] = { 1049092675 }; //vetor de cadastro de serial
-	string sSerialHD_Client[10]; //vetor de serial convertido para string
-	bool bFind; //variavel de controle
-	
-	for (int = 0; i < dwSerialHD_Client.size(); i++) //até o tamanho do vetor
-		sSerialHD_Client[i] = to_string(dwSerialHD_Client[i]); //vetor de string recebe o SerialHD
-
-	for (int i = 0; i < dwSerialHD_Client.size(); i++) { //até o tamanho do vetor
-		for (int j = 0; j < dwSerialHD_Client.size(); j++) { //for auxiliar para varrer
-			if (sSerialHD_Client[i] == to_string(dwSerialHD_Client[i]) //se haver o serial no vetor..
-			    bFind = true; break;
+	for (int i = 0; i < sizeof(dwSerialHD_Client); i++) { //até o tamanho do vetor
+		if (to_string(dwSerialHD_Client[i]) == to_string(dwSerialHD)) { //se o serial do vetor for igual ao serial do usuario, então..
+			bFind = true; break;
 		}
-		if (bFind)
-			break;
 	}
 
 	if (bFind) {
