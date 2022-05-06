@@ -41,8 +41,6 @@ void menu() {
 		printf("/------------------------------------------------------------------------------/\n");
 		printf("Tempo de jogo -> %.2d:%.2d min | Developed by: dwSize\n", Hour / 60, Min);
 		printf("/------------------------------------------------------------------------------/\n");
-		printf("Welcome to Priston Tale Cheat\n");
-		printf("Version 1.0.0\n\n");
 		cout << sGameStatus;
 
 		//DWORD a = 1049092675;
