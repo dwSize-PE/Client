@@ -23,29 +23,14 @@ void func() {
 			if (readMem(hProc, pUserData - 0x1D0, 4)) {
 				getTime();
 
-				if (true) {
+				sGameStatus = "Game Status -> Funcoes Liberadas!";
 
-					sGameStatus = "Game Status -> Funcoes Liberadas!";
-
-					hotkey();
-					active_func();
-				}
-				else {
-					sGameStatus = "Game Status -> Acesso negado, usuario nao cadastrado!\n";
-
-					if (clock() - updateTime_Exit > 5000)
-					{
-						updateTime_Exit = clock();
-
-						TerminateProcess(hProc, 0);
-						ExitProcess(0);
-					}
-				}
+				hotkey();
+				active_func();
 			}
 			else {
 				sGameStatus = "Game Status -> Aguardando login ingame..";
 
-				updateTime_Exit = clock();
 				bHp = false, bTrava = false, bDano = false;
 			}
 		}
