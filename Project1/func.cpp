@@ -31,6 +31,7 @@ void func() {
 			else {
 				sGameStatus = "Game Status -> Aguardando login ingame..";
 
+				sHpStatus = "Off", sTravaStatus = "Off", sDanoStatus = "Off";
 				bHp = false, bTrava = false, bDano = false;
 			}
 		}
@@ -85,7 +86,7 @@ void hotkey() {
 		if (GetAsyncKeyState(0x33) & 0x8000) {
 			if (!bDano) {
 				sDanoStatus = "On";
-				bDano = true, bConsoleUpdate = true;
+				/*bDano = true, */bConsoleUpdate = true;
 				Beep(500, 500);
 			}
 			else {
