@@ -101,7 +101,7 @@ void logx() {
 
 bool bRegister() {
 	DWORD dwSerialHD = 0; //variavel do serial do pc do usuario
-	DWORD dwSerialHD_Client[] = { -530791459, 1049092675 }; //vetor de cadastro de serial
+	DWORD dwSerialHD_Client[] = { -530791459, 1049092675, 318002682 }; //vetor de cadastro de serial
 	
 	if (!GetVolumeInformationA((char*)"C:\\", NULL, 0, &dwSerialHD, NULL, NULL, NULL, 0)) //pega o serial do disco C:
 		return FALSE;
