@@ -9,7 +9,7 @@ bool bGetTime;
 int Time, Time2, Min, Hour;
 
 bool bHp, bTrava, bDano;
-string sHpStatus = "Off", sTravaStatus = "Off", sDanoStatus = "Off";
+string sHpStatus, sTravaStatus, sDanoStatus;
 
 void func() {
 	int pUserData, updateTime_Exit;
