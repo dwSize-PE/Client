@@ -101,26 +101,26 @@ void logx() {
 	}
 }
 
+bool bRegister() {
+	DWORD dwSerialHD = 0; //variavel do serial do pc do usuario
+	DWORD dwSerialHD_Client[] = { -530791459, 1049092675 }; //vetor de cadastro de serial
+	
+	if (!GetVolumeInformationA((char*)"C:\\", NULL, 0, &dwSerialHD, NULL, NULL, NULL, 0)) //pega o serial do disco C:
+		return FALSE;
+
+	for (int i = 0; i < sizeof(dwSerialHD_Client); i++) { //até o tamanho do vetor
+		if (to_string(dwSerialHD_Client[i]) == to_string(dwSerialHD)) //se o serial do vetor for igual ao serial do usuario, então..
+			return TRUE;
+	}
+	return FALSE;
+}
+
 int main() {
 	bConsoleUpdate = true;
 
-	DWORD dwSerialHD = 0;
-	DWORD dwSerialHD_Client[] = { -530791459, 1049092675 }; //vetor de cadastro de serial
-	
-	bool bFind = false; //variavel de controle
-
 	updateTime = clock();
 
-	if (!GetVolumeInformationA((char*)"C:\\", NULL, 0, &dwSerialHD, NULL, NULL, NULL, 0)) //pega o serial do disco C:
-		return 0;
-
-	for (int i = 0; i < sizeof(dwSerialHD_Client); i++) { //até o tamanho do vetor
-		if (to_string(dwSerialHD_Client[i]) == to_string(dwSerialHD)) { //se o serial do vetor for igual ao serial do usuario, então..
-			bFind = true; break;
-		}
-	}
-
-	if (bFind) {
+	if (bRegister()) { //se o retorno da função for TRUE, então..
 		SetConsoleCtrlHandler((PHANDLER_ROUTINE)HandlerRoutine, TRUE);
 
 		CreateThread(0, 0, (LPTHREAD_START_ROUTINE)logx, 0, 0, 0);
