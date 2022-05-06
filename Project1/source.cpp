@@ -105,7 +105,7 @@ int main() {
 
 	DWORD dwSerialHD = 0;
 	DWORD dwSerialHD_Client[] = { -530791459, 1049092675 }; //vetor de cadastro de serial
-	string sSerialHD_Client[2]; //vetor do serial convertido
+	
 	bool bFind = false; //variavel de controle
 
 	updateTime = clock();
