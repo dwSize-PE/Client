@@ -27,7 +27,7 @@ BOOL WINAPI HandlerRoutine(DWORD dwCtrlType)
 		CloseHandle(hProc);
 		CloseHandle(hThread);
 
-		MessageBoxA(0, "Desenvolvido por: dwSize \n\nContato via Discord: dwSize#3592", "Contato", MB_OK | MB_ICONINFORMATION);
+		MessageBoxA(0, "Developed by: dwSize \n\nContato via Discord: dwSize#3592", "Contato", MB_OK | MB_ICONINFORMATION);
 	}
 	return TRUE;
 }
@@ -39,9 +39,11 @@ void menu() {
 		system("cls");
 
 		printf("/------------------------------------------------------------------------------/\n");
-		printf("Tempo de jogo -> %.2d:%.2d min | Desenvolvido por: dwSize\n", Hour / 60, Min);
+		printf("Tempo de jogo -> %.2d:%.2d min | Developed by: dwSize\n", Hour / 60, Min);
 		printf("/------------------------------------------------------------------------------/\n");
-		cout << sGameStatus << endl << endl;
+		printf("Welcome to Priston Tale Cheat\n");
+		printf("Version 1.0.0\n\n");
+		cout << sGameStatus;
 
 		//DWORD a = 1049092675;
 		//printf("%d", dwSerialHD);
@@ -52,9 +54,8 @@ void menu() {
 		cout << "\n\nTID: " << GetThread;
 		cout << "\nhThread: " << hThread;*/
 
-		//cout << "/------------------------------------------------------------------------------/\n";
-
 		if (sGameStatus == "Game Status -> Funcoes Liberadas!") {
+			cout << "\n/------------------------------------------------------------------------------/\n";
 			cout << "[ALT + 1] -> Trava Hp [ " << sHpStatus << " ]\n";
 			cout << "[ALT + 2] -> Trava Mp/Stm [ " << sTravaStatus << " ]\n";
 			cout << "[ALT + 3] -> Dano 2x [ " << sDanoStatus << " ]";
@@ -67,6 +68,7 @@ void menu() {
 void logx() {
 	while (true) {
 		Sleep(50);
+		
 		SYSTEMTIME sLocalTime;
 		GetLocalTime(&sLocalTime);
 
@@ -82,9 +84,8 @@ void logx() {
 
 					fprintf(f, "\n");
 
-					writeMem(hProc, (DWORD)pLogs + 0x28, (byte*)"\x0", 4);
-					writeMem(hProc, (DWORD)pLogs + 0x2c, (byte*)"\x0", 4);
-					writeMem(hProc, (DWORD)pLogs + 0x30, (byte*)"\x0", 4);
+					for (int i = 0; i < 3; i++)
+						writeMem(hProc, (DWORD)pLogs + 0x28 + (i*4), (byte*)"\x0", 4);
 				}
 			}
 		}
