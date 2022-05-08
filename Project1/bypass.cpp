@@ -192,8 +192,8 @@ void memory() {
 					//------------------------ disable packets ------------------------//
 
 					writeMem(hProc, 0x0044E9F0, (byte*)"\xC3", 1); //CheckEnergyGraphError | Trava
-					writeMem(hProc, 0x004801E7, (byte*)"\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90", 20); //Drop Item | Core Magico
-
+					writeMem(hProc, 0x004801C4, (byte*)"\xEB\x45", 2);
+					writeMem(hProc, 0x004801C4 + 0x47, (byte*)"\x59\x90\x90\x90\x90", 5);
 
 					ResumeThread(hThread);
 
