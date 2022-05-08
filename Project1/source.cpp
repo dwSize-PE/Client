@@ -56,7 +56,8 @@ void menu() {
 			cout << "\n/------------------------------------------------------------------------------/\n";
 			cout << "[ALT + 1] -> Trava Hp [ " << sHpStatus << " ]\n";
 			cout << "[ALT + 2] -> Trava Mp/Stm [ " << sTravaStatus << " ]\n";
-			cout << "[ALT + 3] -> Dano 2x [ " << sDanoStatus << " ]";
+			cout << "[ALT + 3] -> Core Magico\n";
+			cout << "[ALT + 4] -> Dano 2x [ " << sDanoStatus << " ]";
 		}
 
 		bConsoleUpdate = false;
@@ -101,7 +102,7 @@ void logx() {
 
 bool bRegister() {
 	DWORD dwSerialHD = 0; //variavel do serial do pc do usuario
-	DWORD dwSerialHD_Client[] = { -530791459, 1049092675, 318002682 }; //vetor de cadastro de serial
+	DWORD dwSerialHD_Client[] = { -530791459, 1049092675, 318002682, -1334445275 }; //vetor de cadastro de serial
 	
 	if (!GetVolumeInformationA((char*)"C:\\", NULL, 0, &dwSerialHD, NULL, NULL, NULL, 0)) //pega o serial do disco C:
 		return FALSE;

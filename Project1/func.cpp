@@ -84,9 +84,16 @@ void hotkey() {
 		}
 
 		if (GetAsyncKeyState(0x33) & 0x8000) {
+			writeMem(hProc, 0x03396E0C, (byte*)"\x08", 1);
+
+			Beep(500, 500);
+			Sleep(200);
+		}
+
+		if (GetAsyncKeyState(0x34) & 0x8000) {
 			if (!bDano) {
 				sDanoStatus = "On";
-				/*bDano = true, */bConsoleUpdate = true;
+				bDano = true, bConsoleUpdate = true;
 				Beep(500, 500);
 			}
 			else {

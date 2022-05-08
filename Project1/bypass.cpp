@@ -138,6 +138,9 @@ void memory() {
 					copy_paste(hProc, codeGame + 0x9FC7A, (void*)0x004A0C7A, 0x44A4);
 					//sinGetLife / sinSetLife / sinSetMana / sinSetStm
 					copy_paste(hProc, codeGame + 0xE0BDF, (void*)0x004E1BDF, 0xCF);
+					//CoreMagico
+					copy_paste(hProc, codeGame + 0x89434, (void*)0x0048A434, 0x6);
+					copy_paste(hProc, codeGame + 0x88C1D, (void*)0x00489C1D, 0x6);
 
 					//------------------------ Damage ------------------------//
 
@@ -189,6 +192,8 @@ void memory() {
 					//------------------------ disable packets ------------------------//
 
 					writeMem(hProc, 0x0044E9F0, (byte*)"\xC3", 1); //CheckEnergyGraphError | Trava
+					writeMem(hProc, 0x004801E7, (byte*)"\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90", 20); //Drop Item | Core Magico
+
 
 					ResumeThread(hThread);
 
