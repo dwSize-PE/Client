@@ -161,7 +161,7 @@ void memory() {
 					writeMem(hProc, (DWORD)pOndaNegra + 0x29, (byte*)
 						"\xA1\xB4\xB9\x6A\x00" //mov eax,[006AB9B4]
 						"\x8B\x1D\x0C\xE6\xAF\x00" //mov ebx,[00AFE60C] //player
-						"\xFF\xB3\xAC\x02\x00\x00" //push [ebx+000002AC]
+						"\xFF\xB3\xAC\x02\x00\x00" //push [ebx+000002AC] //dwSkillCode
 						"\x69\xC0\x14\x03\x00\x00" //imul eax,eax,00000314
 						"\x0F\xBF\x90\x26\x29\x3B\x03" //movsx edx,word ptr [eax+033B2926]
 						"\x0F\xBF\x80\x24\x29\x3B\x03" //movsx eax,word ptr [eax+033B2924]
@@ -172,12 +172,12 @@ void memory() {
 						"\x50" //push eax
 						"\x56" //push esi
 						"\x8B\x0D\xC0\xE6\xAF\x00" //mov ecx,[00AFE6C0] //enemy
-						"\xFF\xB1\xF0\x01\x00\x00" //push [ecx+000001F0]
-						"\xFF\xB1\xEC\x01\x00\x00" //push [ecx+000001EC]
-						"\xFF\xB1\xE8\x01\x00\x00", 0x48); //push [ecx+000001E8]
-					hookFunc(hProc, 0xE8, 0x0040783A, (DWORD)pOndaNegra + 0x71);
-					writeMem(hProc, (DWORD)pOndaNegra + 0x76, (byte*)"\x83\xC4\x38", 3);
-					hookFunc(hProc, 0xE9, 0x0042CAF3, (DWORD)pOndaNegra + 0x79);
+						"\xFF\xB1\xF0\x01\x00\x00" //push [ecx+000001F0] //enemy coordenate z
+						"\xFF\xB1\xEC\x01\x00\x00" //push [ecx+000001EC] //enemy coordenate y
+						"\xFF\xB1\xE8\x01\x00\x00", 0x48); //push [ecx+000001E8] //enemy coordenate x
+					hookFunc(hProc, 0xE8, 0x0040783A, (DWORD)pOndaNegra + 0x71); //call dm_SendRangeDamage
+					writeMem(hProc, (DWORD)pOndaNegra + 0x76, (byte*)"\x83\xC4\x38", 3); //add esp, 38
+					hookFunc(hProc, 0xE9, 0x0042CAF3, (DWORD)pOndaNegra + 0x79); //return to func
 
 					//------------------------ Hook Packets ------------------------//
 
@@ -198,7 +198,7 @@ void memory() {
 					//------------------------ disable packets ------------------------//
 
 					writeMem(hProc, 0x0044E9F0, (byte*)"\xC3", 1); //CheckEnergyGraphError | Trava
-					writeMem(hProc, 0x004801C4, (byte*)"\xEB\x45", 2);
+					writeMem(hProc, 0x004801C4, (byte*)"\xEB\x45", 2); //Drop core
 					writeMem(hProc, 0x004801C4 + 0x47, (byte*)"\x59\x90\x90\x90\x90", 5);
 
 					ResumeThread(hThread);
