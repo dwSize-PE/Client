@@ -153,37 +153,37 @@ void memory() {
 					writeMem(hProc, (DWORD)pSkill, (byte*)"\x80\x3D", 0x2);
 					write(hProc, (DWORD)pSkill + 0x2, (DWORD)pSkill + 0x82, 4);
 					write(hProc, (DWORD)pSkill + 0x6, 0, 1);
-					writeMem(hProc, (DWORD)pSkill + 0x7, (byte*)"\x74\x6C", 2);
+					writeMem(hProc, (DWORD)pSkill + 0x7, (byte*)"\x74\x6D", 2);
 
 					writeMem(hProc, (DWORD)pSkill + 0x9, (byte*)
+						"\x8B\x1D\x0C\xE6\xAF\x00" //mov ebx,[00AFE60C] - lpCurPlayer
+						"\x8B\x83\x9C\x02\x00\x00" //mov eax,[ebx+0000029C] - lpTarget
 						"\x56" //push esi
 						"\x68\xC8\x00\x00\x00" //push 200
-						"\xA1\xC0\xE6\xAF\x00" //mov eax,[00AFE6C0] //enemy
-						"\xFF\xB0\xF0\x01\x00\x00" //push [eax+000001F0] //enemy coordenate z
-						"\xFF\xB0\xEC\x01\x00\x00" //push [eax+000001EC] //enemy coordenate y
-						"\xFF\xB0\xE8\x01\x00\x00", 0x1A); //push [eca+000001E8] //enemy coordenate x
-					hookFunc(hProc, 0xE8, 0x0040680D, (DWORD)pSkill + 0x26); //dm_SendRange
+						"\xFF\xB0\xF0\x01\x00\x00" //push [eax+000001F0] //target coordenate z
+						"\xFF\xB0\xEC\x01\x00\x00" //push [eax+000001EC] //target coordenate y
+						"\xFF\xB0\xE8\x01\x00\x00", 0x24); //push [eca+000001E8] //target coordenate x
+					hookFunc(hProc, 0xE8, 0x0040680D, (DWORD)pSkill + 0x2D); //dm_SendRange
 
-					writeMem(hProc, (DWORD)pSkill + 0x2B, (byte*)
+					writeMem(hProc, (DWORD)pSkill + 0x32, (byte*)
 						"\xA1\xB4\xB9\x6A\x00" //mov eax,[006AB9B4]
-						"\x8B\x1D\x0C\xE6\xAF\x00" //mov ebx,[00AFE60C] //player
 						"\xFF\xB3\xAC\x02\x00\x00" //push [ebx+000002AC] //dwSkillCode
 						"\x69\xC0\x14\x03\x00\x00" //imul eax,eax,00000314
 						"\x0F\xBF\x90\x26\x29\x3B\x03" //movsx edx,word ptr [eax+033B2926]
 						"\x0F\xBF\x80\x24\x29\x3B\x03" //movsx eax,word ptr [eax+033B2924]
+						"\x8B\x8B\x9C\x02\x00\x00" //mov ecx,[ebx+0000029C]
 						"\x56" //push esi
 						"\x56" //push esi
 						"\x52" //push edx
 						"\x50" //push eax
 						"\x56" //push esi
-						"\x8B\x0D\xC0\xE6\xAF\x00" //mov ecx,[00AFE6C0] //enemy
-						"\xFF\xB1\xF0\x01\x00\x00" //push [ecx+000001F0] //enemy coordenate z
-						"\xFF\xB1\xEC\x01\x00\x00" //push [ecx+000001EC] //enemy coordenate y
-						"\xFF\xB1\xE8\x01\x00\x00", 0x42); //push [ecx+000001E8] //enemy coordenate x
-					hookFunc(hProc, 0xE8, 0x0040783A, (DWORD)pSkill + 0x6D); //call dm_SendRangeDamage
-					writeMem(hProc, (DWORD)pSkill + 0x72, (byte*)"\x83\xC4\x38", 3); //add esp, 38
+						"\xFF\xB1\xF0\x01\x00\x00" //push [ecx+000001F0] //target coordenate z
+						"\xFF\xB1\xEC\x01\x00\x00" //push [ecx+000001EC] //target coordenate y
+						"\xFF\xB1\xE8\x01\x00\x00", 0x3C); //push [ecx+000001E8] //target coordenate x
+					hookFunc(hProc, 0xE8, 0x0040783A, (DWORD)pSkill + 0x6E); //call dm_SendRangeDamage
+					writeMem(hProc, (DWORD)pSkill + 0x73, (byte*)"\x83\xC4\x38", 3); //add esp, 38
 
-					hookFunc(hProc, 0xE9, 0x0042CAF3, (DWORD)pSkill + 0x75); //return to func
+					hookFunc(hProc, 0xE9, 0x0042CAF3, (DWORD)pSkill + 0x76); //return to func
 
 					//------------------------ Hook Packets ------------------------//
 
