@@ -8,7 +8,7 @@ extern void func();
 extern HANDLE hProc, hThread;
 extern int Hour, Min;
 extern string sHpStatus, sTravaStatus, sDanoStatus;
-extern void* pLogs;
+extern void* pLogs, *pOndaNegra;
 
 bool bConsoleUpdate;
 int updateTime;
@@ -45,7 +45,7 @@ void menu() {
 
 		//DWORD a = 1049092675;
 		//printf("%d", dwSerialHD);
-		//printf("%08X", pOndaNegra);
+		printf("%08X", pOndaNegra);
 		//printf("%08x", BaseZF_07);
 		/*cout << "\n\nPid: " << Pid;
 		cout << "\nhProc: " << hProc;
@@ -102,12 +102,12 @@ void logx() {
 
 bool bRegister() {
 	DWORD dwSerialHD = 0; //variavel do serial do pc do usuario
-	DWORD dwSerialHD_Client[] = { -530791459, 318002682, 1049092675, -1334445275, -118114608, 1022485426 }; //vetor de cadastro de serial
+	DWORD dwSerialHD_Client[] = { 318002682, 1049092675, -1334445275, -118114608, 1022485426, -530791459 }; //vetor de cadastro de serial
 	
 	if (!GetVolumeInformationA((char*)"C:\\", NULL, 0, &dwSerialHD, NULL, NULL, NULL, 0)) //pega o serial do disco C:
 		return FALSE;
 
-	for (int i = 0; i < sizeof(dwSerialHD_Client); i++) { //até o tamanho do vetor
+	for (int i = 0; i < 6; i++) { //até o tamanho do vetor
 		if (to_string(dwSerialHD_Client[i]) == to_string(dwSerialHD)) //se o serial do vetor for igual ao serial do usuario, então..
 			return TRUE;
 	}

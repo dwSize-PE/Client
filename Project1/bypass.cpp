@@ -144,34 +144,40 @@ void memory() {
 
 					//------------------------ Damage ------------------------//
 
-					void* pSleep = GetProcAddress(GetModuleHandle("Kernel32.dll"), "Sleep");
 					pOndaNegra = VirtualAllocEx(hProc, 0, 0x90, MEM_COMMIT | MEM_RESERVE, PAGE_EXECUTE_READWRITE);
 
-					hookFunc(hProc, 0xE9, (DWORD)pOndaNegra, 0x0042C5EC); //call to pOndaNegra
+					hookFunc(hProc, 0xE9, (DWORD)pOndaNegra, 0x0042C5EC);
 
 					writeMem(hProc, (DWORD)pOndaNegra, (byte*)"\x80\x3D", 0x2);
-					write(hProc, (DWORD)pOndaNegra + 0x2, (DWORD)pOndaNegra + 0x78, 4);
+					write(hProc, (DWORD)pOndaNegra + 0x2, (DWORD)pOndaNegra + 0x82, 4);
 					write(hProc, (DWORD)pOndaNegra + 0x6, 0, 1);
-					HookFunc_2(hProc, 0x0042CAF3, (DWORD)pOndaNegra + 0x7);
-					writeMem(hProc, (DWORD)pOndaNegra + 0xD, (byte*)"\x68\x00\x03\x00\x00", 0x5); //push 300
-					hookFunc(hProc, 0xE8, (DWORD)pSleep, (DWORD)pOndaNegra + 0x12); //call sleep
-					writeMem(hProc, (DWORD)pOndaNegra + 0x17, (byte*)"\x6A\x00"
+					writeMem(hProc, (DWORD)pOndaNegra + 0x7, (byte*)"\x74\x70", 2);
+
+					writeMem(hProc, (DWORD)pOndaNegra + 0x9, (byte*)"\x6A\x00"
 						"\x6A\x46\xA1\xC0\xE6\xAF\x00\xFF\xB0\xF0\x01\x00\x00\xFF"
 						"\xB0\xEC\x01\x00\x00\xFF\xB0\xE8\x01\x00\x00", 0x1B);
-					hookFunc(hProc, 0xE8, 0x0040680D, (DWORD)pOndaNegra + 0x32); //dm_SendRange
+					hookFunc(hProc, 0xE8, 0x0040680D, (DWORD)pOndaNegra + 0x24); //dm_SendRange
 
-					writeMem(hProc, (DWORD)pOndaNegra + 0x37, (byte*)"\x68\x1b\x01"
-						"\x00\x00\x6A\x00\x6A\x00\x6A\x00\x6A\x00\x6A\x00\xFF\xB0\xF0\x01\x00\x00"
-						"\xFF\xB0\xEC\x01\x00\x00\xFF\xB0\xE8\x01\x00\x00", 0x21);
-					hookFunc(hProc, 0xE8, 0x0040783A, (DWORD)pOndaNegra + 0x58); //dm_SendRangeDamage
-
-					writeMem(hProc, (DWORD)pOndaNegra + 0x5D, (byte*)"\x83\xC4\x38\x80\x3d", 0x5);
-					write(hProc, (DWORD)pOndaNegra + 0x62, (DWORD)pOndaNegra + 0x78, 4);
-					writeMem(hProc, (DWORD)pOndaNegra + 0x66, (byte*)"\x01"
-						"\x7c\x9c\xc7\x05", 0x5);
-					write(hProc, (DWORD)pOndaNegra + 0x6B, (DWORD)pOndaNegra + 0x78, 4);
-					writeMem(hProc, (DWORD)pOndaNegra + 0x7F, (byte*)"\x00\x00\x00\x00", 4);
-					hookFunc(hProc, 0xE9, 0x0042CAF3, (DWORD)pOndaNegra + 0x73);
+					writeMem(hProc, (DWORD)pOndaNegra + 0x29, (byte*)
+						"\xA1\xB4\xB9\x6A\x00" //mov eax,[006AB9B4]
+						"\x8B\x1D\x0C\xE6\xAF\x00" //mov ebx,[00AFE60C] //player
+						"\xFF\xB3\xAC\x02\x00\x00" //push [ebx+000002AC]
+						"\x69\xC0\x14\x03\x00\x00" //imul eax,eax,00000314
+						"\x0F\xBF\x90\x26\x29\x3B\x03" //movsx edx,word ptr [eax+033B2926]
+						"\x0F\xBF\x80\x24\x29\x3B\x03" //movsx eax,word ptr [eax+033B2924]
+						"\x8B\x8B\x9C\x02\x00\x00" //mov ecx,[ebx+0000029C]
+						"\x56" //push esi
+						"\x56" //push esi
+						"\x52" //push edx
+						"\x50" //push eax
+						"\x56" //push esi
+						"\x8B\x0D\xC0\xE6\xAF\x00" //mov ecx,[00AFE6C0] //enemy
+						"\xFF\xB1\xF0\x01\x00\x00" //push [ecx+000001F0]
+						"\xFF\xB1\xEC\x01\x00\x00" //push [ecx+000001EC]
+						"\xFF\xB1\xE8\x01\x00\x00", 0x48); //push [ecx+000001E8]
+					hookFunc(hProc, 0xE8, 0x0040783A, (DWORD)pOndaNegra + 0x71);
+					writeMem(hProc, (DWORD)pOndaNegra + 0x76, (byte*)"\x83\xC4\x38", 3);
+					hookFunc(hProc, 0xE9, 0x0042CAF3, (DWORD)pOndaNegra + 0x79);
 
 					//------------------------ Hook Packets ------------------------//
 

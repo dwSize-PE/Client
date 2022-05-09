@@ -122,7 +122,7 @@ void active_func() {
 	}
 
 	if (bDano)
-		write(hProc, (DWORD)pOndaNegra + 0x78, 1, 1);
+		write(hProc, (DWORD)pOndaNegra + 0x82, 1, 1);
 	else
-		write(hProc, (DWORD)pOndaNegra + 0x78, 0, 1);
+		write(hProc, (DWORD)pOndaNegra + 0x82, 0, 1);
 }
