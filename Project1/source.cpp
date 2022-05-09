@@ -45,7 +45,7 @@ void menu() {
 
 		//DWORD a = 1049092675;
 		//printf("%d", dwSerialHD);
-		printf("%08X", pOndaNegra);
+		//printf("%08X", pOndaNegra);
 		//printf("%08x", BaseZF_07);
 		/*cout << "\n\nPid: " << Pid;
 		cout << "\nhProc: " << hProc;
