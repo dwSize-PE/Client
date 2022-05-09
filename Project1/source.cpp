@@ -20,9 +20,6 @@ BOOL WINAPI HandlerRoutine(DWORD dwCtrlType)
 {
 	if (dwCtrlType == CTRL_CLOSE_EVENT)
 	{
-		fprintf(f, "\n");
-		fclose(f);
-
 		TerminateProcess(hProc, 0);
 		CloseHandle(hProc);
 		CloseHandle(hThread);

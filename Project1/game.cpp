@@ -9,6 +9,8 @@ HANDLE hProc = 0, hThread = 0;
 bool bActive;
 extern bool bPatch, bPatchActive, bCopyGame;
 
+extern FILE* f;
+
 void permission() {
 	DWORD dwPid, dwThreadId;
 	bool bhProc = false, bhThreadId = false;
@@ -57,6 +59,9 @@ void permission() {
 				CloseHandle(hProc);
 				CloseHandle(hThread);
 				hProc = 0, hThread = 0;
+
+				fprintf(f, "\n");
+				fclose(f);
 
 				bActive = false, bPatch = false, bPatchActive = false, bCopyGame = false, bhProc = false, bhThreadId = false;
 			}
