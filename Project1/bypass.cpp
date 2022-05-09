@@ -146,9 +146,9 @@ void memory() {
 
 					pSkill = VirtualAllocEx(hProc, 0, 0x90, MEM_COMMIT | MEM_RESERVE, PAGE_EXECUTE_READWRITE);
 
-					hookFunc(hProc, 0xE9, (DWORD)pSkill, 0x0042C5EC); //Força Divina
-					hookFunc(hProc, 0xE9, (DWORD)pSkill, 0x0042AB7B, (byte*)"\x90\x90", 2); //Silraphim
-					hookFunc(hProc, 0xE9, (DWORD)pSkill, 0x0042B48C, (byte*)"\x90\x90", 2); //Impacto
+					hookFunc(hProc, 0xE9, (DWORD)pSkill, 0x0042C5EC); //Força Divina | Shaman
+					hookFunc(hProc, 0xE9, (DWORD)pSkill, 0x0042AB7B, (byte*)"\x90\x90", 2); //Silraphim | Mago
+					hookFunc(hProc, 0xE9, (DWORD)pSkill, 0x0042B48C, (byte*)"\x90\x90", 2); //Impacto | Sacer
 
 					writeMem(hProc, (DWORD)pSkill, (byte*)"\x80\x3D", 0x2);
 					write(hProc, (DWORD)pSkill + 0x2, (DWORD)pSkill + 0x82, 4);
@@ -157,12 +157,12 @@ void memory() {
 
 					writeMem(hProc, (DWORD)pSkill + 0x9, (byte*)
 						"\x8B\x1D\x0C\xE6\xAF\x00" //mov ebx,[00AFE60C] - lpCurPlayer
-						"\x8B\x83\x9C\x02\x00\x00" //mov eax,[ebx+0000029C] - lpTarget
+						"\x8B\x83\x9C\x02\x00\x00" //mov eax,[ebx+0000029C] - chrAttackTarget
 						"\x56" //push esi
 						"\x68\xC8\x00\x00\x00" //push 200
 						"\xFF\xB0\xF0\x01\x00\x00" //push [eax+000001F0] //target coordenate z
 						"\xFF\xB0\xEC\x01\x00\x00" //push [eax+000001EC] //target coordenate y
-						"\xFF\xB0\xE8\x01\x00\x00", 0x24); //push [eca+000001E8] //target coordenate x
+						"\xFF\xB0\xE8\x01\x00\x00", 0x24); //push [eax+000001E8] //target coordenate x
 					hookFunc(hProc, 0xE8, 0x0040680D, (DWORD)pSkill + 0x2D); //dm_SendRange
 
 					writeMem(hProc, (DWORD)pSkill + 0x32, (byte*)
@@ -171,7 +171,7 @@ void memory() {
 						"\x69\xC0\x14\x03\x00\x00" //imul eax,eax,00000314
 						"\x0F\xBF\x90\x26\x29\x3B\x03" //movsx edx,word ptr [eax+033B2926]
 						"\x0F\xBF\x80\x24\x29\x3B\x03" //movsx eax,word ptr [eax+033B2924]
-						"\x8B\x8B\x9C\x02\x00\x00" //mov ecx,[ebx+0000029C]
+						"\x8B\x8B\x9C\x02\x00\x00" //mov ecx,[ebx+0000029C] //chrAttackTarget
 						"\x56" //push esi
 						"\x56" //push esi
 						"\x52" //push edx
