@@ -3,7 +3,7 @@
 extern HANDLE hProc;
 extern string sGameStatus;
 extern bool bPatchActive, bConsoleUpdate;
-extern void* pOndaNegra;
+extern void* pSkill;
 
 bool bGetTime;
 int Time, Time2, Min, Hour;
@@ -12,7 +12,7 @@ bool bHp, bTrava, bDano;
 string sHpStatus, sTravaStatus, sDanoStatus;
 
 void func() {
-	int pUserData, updateTime_Exit;
+	int pUserData;
 
 	while (true) {
 		Sleep(200);
@@ -122,7 +122,7 @@ void active_func() {
 	}
 
 	if (bDano)
-		write(hProc, (DWORD)pOndaNegra + 0x82, 1, 1);
+		write(hProc, (DWORD)pSkill + 0x82, 1, 1);
 	else
-		write(hProc, (DWORD)pOndaNegra + 0x82, 0, 1);
+		write(hProc, (DWORD)pSkill + 0x82, 0, 1);
 }
