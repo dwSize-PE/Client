@@ -15,7 +15,7 @@ void memory() {
 	while (true) {
 		Sleep(200);
 		if (!bPatch && bActive) {
-			//Ponto de referencia para comeÁar a alterar a memÛria
+			//Ponto de referencia para come√ßar a alterar a mem√≥ria
 			hooksGame = readMem(hProc, 0x004E1C0C, 1);
 			hooksGame2 = readMem(hProc, 0x00401000, 1);
 
@@ -32,7 +32,7 @@ void memory() {
 				}
 			}
 			else if (hooksGame == 0xE9) {
-				//Retorna a Base Addr do endereÁo dinamico alocado pelo ZF
+				//Retorna a Base Addr do endere√ßo dinamico alocado pelo ZF
 				int BaseZF_07 = aobScan(hProc, 0, 0x132000);
 				//BaseZF2_0A = aobScan(hProc, 0, 0x124000);
 
@@ -41,19 +41,19 @@ void memory() {
 					sGameStatus = "Game Status -> Aguardando resposta de ZForce.dll..";
 					bConsoleUpdate = true;
 
-					//Suspende a thread para fazer as alteraÁıes afim de prevenir detecÁıes antecipadas.
+					//Suspende a thread para fazer as altera√ß√µes afim de prevenir detec√ß√µes antecipadas.
 					SuspendThread(hThread);
 
-					//copia todos os bytes da sess„o ZForce
+					//copia todos os bytes da sess√£o ZForce
 					int pAllocZF = copy_paste(hProc, BaseZF_07, 0, 0x1315D0);
 
-					//copia todos os bytes da sess„o Game.exe
+					//copia todos os bytes da sess√£o Game.exe
 					int pAllocGame = copy_paste(hProc, 0x00401000, 0, 0x247FFF);
 
-					//espaÁo alocado din‚mico para pÙr os bytes da sess„o ZForce
+					//espa√ßo alocado din√¢mico para p√¥r os bytes da sess√£o ZForce
 					void* pbCheck = VirtualAllocEx(hProc, 0, 0xBC, MEM_COMMIT | MEM_RESERVE, PAGE_EXECUTE_READWRITE);
 
-					hookFunc(hProc, 0xE9, (DWORD)pbCheck, BaseZF_07 + 0x80BDC, (byte*)"\x90", 1); //Hook para o endereÁo alocado
+					hookFunc(hProc, 0xE9, (DWORD)pbCheck, BaseZF_07 + 0x80BDC, (byte*)"\x90", 1); //Hook para o endere√ßo alocado
 
 					writeMem(hProc, (DWORD)pbCheck, (byte*)"\x81\xFE\xD0\x15\x13\x00" //cmp esi, 001315D0
 						"\x74\x43"	//je ..
@@ -153,19 +153,22 @@ void memory() {
 					write(hProc, (DWORD)pOndaNegra + 0x6, 0, 1);
 					writeMem(hProc, (DWORD)pOndaNegra + 0x7, (byte*)"\x74\x70", 2);
 
-					writeMem(hProc, (DWORD)pOndaNegra + 0x9, (byte*)"\x6A\x00"
-						"\x6A\x46\xA1\xC0\xE6\xAF\x00\xFF\xB0\xF0\x01\x00\x00\xFF"
-						"\xB0\xEC\x01\x00\x00\xFF\xB0\xE8\x01\x00\x00", 0x1B);
-					hookFunc(hProc, 0xE8, 0x0040680D, (DWORD)pOndaNegra + 0x24); //dm_SendRange
+					writeMem(hProc, (DWORD)pOndaNegra + 0x9, (byte*)
+						"\x56" //push esi
+						"\x6A\x46" //push 70
+						"\xA1\xC0\xE6\xAF\x00" //mov eax,[00AFE6C0] //enemy
+						"\xFF\xB0\xF0\x01\x00\x00" //push [eax+000001F0] //enemy coordenate z
+						"\xFF\xB0\xEC\x01\x00\x00" //push [eax+000001EC] //enemy coordenate y
+						"\xFF\xB0\xE8\x01\x00\x00", 0x1A); //push [eca+000001E8] //enemy coordenate x
+					hookFunc(hProc, 0xE8, 0x0040680D, (DWORD)pOndaNegra + 0x23); //dm_SendRange
 
-					writeMem(hProc, (DWORD)pOndaNegra + 0x29, (byte*)
+					writeMem(hProc, (DWORD)pOndaNegra + 0x28, (byte*)
 						"\xA1\xB4\xB9\x6A\x00" //mov eax,[006AB9B4]
 						"\x8B\x1D\x0C\xE6\xAF\x00" //mov ebx,[00AFE60C] //player
 						"\xFF\xB3\xAC\x02\x00\x00" //push [ebx+000002AC] //dwSkillCode
 						"\x69\xC0\x14\x03\x00\x00" //imul eax,eax,00000314
 						"\x0F\xBF\x90\x26\x29\x3B\x03" //movsx edx,word ptr [eax+033B2926]
 						"\x0F\xBF\x80\x24\x29\x3B\x03" //movsx eax,word ptr [eax+033B2924]
-						"\x8B\x8B\x9C\x02\x00\x00" //mov ecx,[ebx+0000029C]
 						"\x56" //push esi
 						"\x56" //push esi
 						"\x52" //push edx
@@ -174,10 +177,10 @@ void memory() {
 						"\x8B\x0D\xC0\xE6\xAF\x00" //mov ecx,[00AFE6C0] //enemy
 						"\xFF\xB1\xF0\x01\x00\x00" //push [ecx+000001F0] //enemy coordenate z
 						"\xFF\xB1\xEC\x01\x00\x00" //push [ecx+000001EC] //enemy coordenate y
-						"\xFF\xB1\xE8\x01\x00\x00", 0x48); //push [ecx+000001E8] //enemy coordenate x
-					hookFunc(hProc, 0xE8, 0x0040783A, (DWORD)pOndaNegra + 0x71); //call dm_SendRangeDamage
-					writeMem(hProc, (DWORD)pOndaNegra + 0x76, (byte*)"\x83\xC4\x38", 3); //add esp, 38
-					hookFunc(hProc, 0xE9, 0x0042CAF3, (DWORD)pOndaNegra + 0x79); //return to func
+						"\xFF\xB1\xE8\x01\x00\x00", 0x42); //push [ecx+000001E8] //enemy coordenate x
+					hookFunc(hProc, 0xE8, 0x0040783A, (DWORD)pOndaNegra + 0x6A); //call dm_SendRangeDamage
+					writeMem(hProc, (DWORD)pOndaNegra + 0x6F, (byte*)"\x83\xC4\x38", 3); //add esp, 38
+					hookFunc(hProc, 0xE9, 0x0042CAF3, (DWORD)pOndaNegra + 0x72); //return to func
 
 					//------------------------ Hook Packets ------------------------//
 
