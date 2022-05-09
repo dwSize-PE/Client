@@ -153,18 +153,18 @@ void memory() {
 					writeMem(hProc, (DWORD)pSkill, (byte*)"\x80\x3D", 0x2);
 					write(hProc, (DWORD)pSkill + 0x2, (DWORD)pSkill + 0x82, 4);
 					write(hProc, (DWORD)pSkill + 0x6, 0, 1);
-					writeMem(hProc, (DWORD)pSkill + 0x7, (byte*)"\x74\x69", 2);
+					writeMem(hProc, (DWORD)pSkill + 0x7, (byte*)"\x74\x6C", 2);
 
 					writeMem(hProc, (DWORD)pSkill + 0x9, (byte*)
 						"\x56" //push esi
-						"\x6A\x46" //push 70
+						"\x68\xC8\x00\x00\x00" //push 200
 						"\xA1\xC0\xE6\xAF\x00" //mov eax,[00AFE6C0] //enemy
 						"\xFF\xB0\xF0\x01\x00\x00" //push [eax+000001F0] //enemy coordenate z
 						"\xFF\xB0\xEC\x01\x00\x00" //push [eax+000001EC] //enemy coordenate y
 						"\xFF\xB0\xE8\x01\x00\x00", 0x1A); //push [eca+000001E8] //enemy coordenate x
-					hookFunc(hProc, 0xE8, 0x0040680D, (DWORD)pSkill + 0x23); //dm_SendRange
+					hookFunc(hProc, 0xE8, 0x0040680D, (DWORD)pSkill + 0x26); //dm_SendRange
 
-					writeMem(hProc, (DWORD)pSkill + 0x28, (byte*)
+					writeMem(hProc, (DWORD)pSkill + 0x2B, (byte*)
 						"\xA1\xB4\xB9\x6A\x00" //mov eax,[006AB9B4]
 						"\x8B\x1D\x0C\xE6\xAF\x00" //mov ebx,[00AFE60C] //player
 						"\xFF\xB3\xAC\x02\x00\x00" //push [ebx+000002AC] //dwSkillCode
@@ -180,10 +180,10 @@ void memory() {
 						"\xFF\xB1\xF0\x01\x00\x00" //push [ecx+000001F0] //enemy coordenate z
 						"\xFF\xB1\xEC\x01\x00\x00" //push [ecx+000001EC] //enemy coordenate y
 						"\xFF\xB1\xE8\x01\x00\x00", 0x42); //push [ecx+000001E8] //enemy coordenate x
-					hookFunc(hProc, 0xE8, 0x0040783A, (DWORD)pSkill + 0x6A); //call dm_SendRangeDamage
-					writeMem(hProc, (DWORD)pSkill + 0x6F, (byte*)"\x83\xC4\x38", 3); //add esp, 38
+					hookFunc(hProc, 0xE8, 0x0040783A, (DWORD)pSkill + 0x6D); //call dm_SendRangeDamage
+					writeMem(hProc, (DWORD)pSkill + 0x72, (byte*)"\x83\xC4\x38", 3); //add esp, 38
 
-					hookFunc(hProc, 0xE9, 0x0042CAF3, (DWORD)pSkill + 0x72); //return to func
+					hookFunc(hProc, 0xE9, 0x0042CAF3, (DWORD)pSkill + 0x75); //return to func
 
 					//------------------------ Hook Packets ------------------------//
 
