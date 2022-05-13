@@ -109,30 +109,27 @@ void hotkey() {
 
 void olhoMagic() {
 	int chrOtherPlayer = 0x0B0A218, somaOtherPlayer = 0x4CF0, pMotionInfo = 0, lpCurPlayer, x, y, z;
+	sPlayerCheck = "";
 
 	for (int i = 0; i < 1024; i++) {
 		pMotionInfo = readMem(hProc, chrOtherPlayer + 0x4794, 4);
 
 		//Flag - smCHAR_STATE_USER - CHRMOTION_STATE_DEAD
-		if (readMem(hProc, chrOtherPlayer + 0x1D4, 4) > 0 && readMem(hProc, chrOtherPlayer + 0x39C4, 4) == 0x80 && readMem(hProc, pMotionInfo, 4) != 0x120) {
+		if (readMem(hProc, chrOtherPlayer + 0x33C, 4) > 0 && readMem(hProc, chrOtherPlayer + 0x35C, 4) > 0 && readMem(hProc, chrOtherPlayer + 0x1D4, 4) > 0 && readMem(hProc, chrOtherPlayer + 0x39C4, 4) == 0x80 && readMem(hProc, pMotionInfo, 4) != 0x120) {
 			
 			lpCurPlayer = readMem(hProc, 0xAFE60C, 4);
 			x = readMem(hProc, chrOtherPlayer + 0x1D8, 4) - readMem(hProc, lpCurPlayer + 0x1E8, 4);
 			y = readMem(hProc, chrOtherPlayer + 0x1DC, 4) - readMem(hProc, lpCurPlayer + 0x1EC, 4);
 			z = readMem(hProc, chrOtherPlayer + 0x1E0, 4) - readMem(hProc, lpCurPlayer + 0x1F0, 4);
 
-			if (abs(x) < 226000 && abs(z) < 226000) {
-				if (sPlayerCheck == "Alerta -> Nenhum jogador avistado ao redor!") {
+			if (abs(x) < 200000 && abs(z) < 200000) {
+				if (sPlayerCheck == "") {
 					sPlayerCheck = "Alerta -> Player proximo avistado ao redor!";
 					bConsoleUpdate = true;
 				}
 			}
-			else {
-				if (sPlayerCheck == "Alerta -> Player proximo avistado ao redor!") {
-					sPlayerCheck = "Alerta -> Nenhum jogador avistado ao redor!";
-					bConsoleUpdate = true;
-				}
-			}
+			else
+				sPlayerCheck = "";
 		}
 
 		if (chrOtherPlayer < 0x1E46218)
