@@ -32,7 +32,7 @@ void func() {
 			else {
 				sGameStatus = "Game Status -> Aguardando login ingame..";
 
-				sHpStatus = "Off", sTravaStatus = "Off", sDanoStatus = "Off";
+				sHpStatus = "Off", sTravaStatus = "Off", sDanoStatus = "Off", sPlayerCheck = "Alerta -> Nenhum jogador avistado ao redor!";
 				bHp = false, bTrava = false, bDano = false, bGetTime = false;
 			}
 		}
@@ -122,12 +122,16 @@ void olhoMagic() {
 			z = readMem(hProc, chrOtherPlayer + 0x1E0, 4) - readMem(hProc, lpCurPlayer + 0x1F0, 4);
 
 			if (abs(x) < 226000 && abs(z) < 226000) {
-				sPlayerCheck = "Aviso! Jogador proximo avistado.";
-				bConsoleUpdate = true;
+				if (sPlayerCheck == "Alerta -> Nenhum jogador avistado ao redor!") {
+					sPlayerCheck = "Alerta -> Player proximo avistado ao redor!";
+					bConsoleUpdate = true;
+				}
 			}
 			else {
-				sPlayerCheck = "Nenhum jogador ao redor!";
-				bConsoleUpdate = true;
+				if (sPlayerCheck == "Alerta -> Player proximo avistado ao redor!") {
+					sPlayerCheck = "Alerta -> Nenhum jogador avistado ao redor!";
+					bConsoleUpdate = true;
+				}
 			}
 		}
 
