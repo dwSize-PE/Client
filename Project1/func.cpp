@@ -9,7 +9,7 @@ bool bGetTime;
 int Time, Time2, Min, Hour;
 
 bool bHp, bTrava, bDano;
-string sHpStatus, sTravaStatus, sDanoStatus;
+string sHpStatus, sTravaStatus, sDanoStatus, sPlayerCheck;
 
 void func() {
 	int pUserData;
@@ -26,13 +26,14 @@ void func() {
 				sGameStatus = "Game Status -> Funcoes Liberadas!";
 
 				hotkey();
+				olhoMagic();
 				active_func();
 			}
 			else {
 				sGameStatus = "Game Status -> Aguardando login ingame..";
 
 				sHpStatus = "Off", sTravaStatus = "Off", sDanoStatus = "Off";
-				bHp = false, bTrava = false, bDano = false;
+				bHp = false, bTrava = false, bDano = false, bGetTime = false;
 			}
 		}
 	}
@@ -103,6 +104,35 @@ void hotkey() {
 			}
 			Sleep(200);
 		}
+	}
+}
+
+void olhoMagic() {
+	int chrOtherPlayer = 0x0B0A218, somaOtherPlayer = 0x4CF0, pMotionInfo = 0, lpCurPlayer, x, y, z;
+
+	for (int i = 0; i < 1024; i++) {
+		pMotionInfo = readMem(hProc, chrOtherPlayer + 0x4794, 4);
+
+		//Flag - smCHAR_STATE_USER - CHRMOTION_STATE_DEAD
+		if (readMem(hProc, chrOtherPlayer + 0x1D4, 4) > 0 && readMem(hProc, chrOtherPlayer + 0x39C4, 4) == 0x80 && readMem(hProc, pMotionInfo, 4) != 0x120) {
+			
+			lpCurPlayer = readMem(hProc, 0xAFE60C, 4);
+			x = readMem(hProc, chrOtherPlayer + 0x1D8, 4) - readMem(hProc, lpCurPlayer + 0x1E8, 4);
+			y = readMem(hProc, chrOtherPlayer + 0x1DC, 4) - readMem(hProc, lpCurPlayer + 0x1EC, 4);
+			z = readMem(hProc, chrOtherPlayer + 0x1E0, 4) - readMem(hProc, lpCurPlayer + 0x1F0, 4);
+
+			if (abs(x) < 226000 && abs(z) < 226000) {
+				sPlayerCheck = "Aviso! Jogador proximo avistado.";
+				bConsoleUpdate = true;
+			}
+			else {
+				sPlayerCheck = "Nenhum jogador ao redor!";
+				bConsoleUpdate = true;
+			}
+		}
+
+		if (chrOtherPlayer < 0x1E46218)
+			chrOtherPlayer += somaOtherPlayer;
 	}
 }
 

@@ -10,7 +10,7 @@ bool bPatch, bPatchActive, bCopyGame;
 void* pSkill, * pLogs;
 
 void memory() {
-	int hooksGame, hooksGame2, codeGame;//, BaseZF2_0A;
+	int hooksGame, hooksGame2, codeGame;
 
 	while (true) {
 		Sleep(200);
@@ -34,10 +34,10 @@ void memory() {
 			else if (hooksGame == 0xE9) {
 				//Retorna a Base Addr do endereço dinamico alocado pelo ZF
 				int BaseZF_07 = aobScan(hProc, 0, 0x132000);
-				//BaseZF2_0A = aobScan(hProc, 0, 0x124000);
+				int BaseZF2_0A = aobScan(hProc, 0, 0x124000);
 
 				//Se encontrar..
-				if (BaseZF_07 > 0) {
+				if (BaseZF_07 > 0 && BaseZF2_0A > 0) {
 					sGameStatus = "Game Status -> Aguardando resposta de ZForce.dll..";
 					bConsoleUpdate = true;
 
@@ -46,6 +46,7 @@ void memory() {
 
 					//copia todos os bytes da sessão ZForce
 					int pAllocZF = copy_paste(hProc, BaseZF_07, 0, 0x1315D0);
+					int pAllocZF2 = copy_paste(hProc, BaseZF2_0A + 0x100, 0, 0x116EFE);
 
 					//copia todos os bytes da sessão Game.exe
 					int pAllocGame = copy_paste(hProc, 0x00401000, 0, 0x247FFF);
@@ -56,71 +57,81 @@ void memory() {
 					hookFunc(hProc, 0xE9, (DWORD)pbCheck, BaseZF_07 + 0x80BDC, (byte*)"\x90", 1); //Hook para o endereço alocado
 
 					writeMem(hProc, (DWORD)pbCheck, (byte*)"\x81\xFE\xD0\x15\x13\x00" //cmp esi, 001315D0
-						"\x74\x43"	//je ..
+						"\x74\x4B"	//je ..
 						"\x81\xFE\xFF\x7F\x24\x00" //cmp esi,00247FFF
-						"\x74\x49" //je ..
+						"\x74\x51" //je ..
 						"\x81\xF9\x6D\x1C\x4E\x00" //cmp ecx,004E1C6D
-						"\x74\x4F"
+						"\x74\x57"
 						"\x81\xF9\x15\x1C\x4E\x00" //cmp ecx,004E1C15
-						"\x74\x55"
+						"\x74\x5D"
 						"\x81\xF9\x8F\xF4\x44\x00" //cmp ecx,0044F48F
-						"\x74\x5B"
+						"\x74\x63"
 						"\x81\xF9\xF0\xE9\x44\x00" //cmp ecx,0044E9F0
-						"\x74\x61"
+						"\x74\x69"
 						"\x81\xF9\x4F\xED\x41\x00" //cmp ecx, 0041ED4F
-						"\x74\x67"
+						"\x74\x6F"
 						"\x81\xF9\x39\xFE\x41\x00" //cmp ecx, 0041FE39
-						"\x74\x6D"
+						"\x74\x75"
+						"\x81\xFE\xFE\x6E\x11\x00" //cmp esi,00116EFE
+						"\x74\x7B" //je ..
 						"\x8D\x1C\x08" //lea ebx,[eax+ecx]
 						"\x0F\xB6\x1B" //movzx ebx,byte ptr [ebx]
-						, 0x46);
-					hookFunc(hProc, 0xE9, BaseZF_07 + 0x80BE2, (DWORD)pbCheck + 0x46); //return to func
+						, 0x4E);
+					hookFunc(hProc, 0xE9, BaseZF_07 + 0x80BE2, (DWORD)pbCheck + 0x4E); //return to func
 
-					writeMem(hProc, (DWORD)pbCheck + 0x4B, (byte*)"\x8D\x98", 2); //lea ebx, [eax + 00000000]
-					write(hProc, (DWORD)pbCheck + 0x4D, pAllocZF, 4); //Addr pAllocZF
-					writeMem(hProc, (DWORD)pbCheck + 0x51, (byte*)"\x0F\xB6\x1B", 3); //movzx ebx,byte ptr [ebx]
-					hookFunc(hProc, 0xE9, BaseZF_07 + 0x80BE2, (DWORD)pbCheck + 0x54); //return to func
+					//cmp esi, 1315D0
+					writeMem(hProc, (DWORD)pbCheck + 0x53, (byte*)"\x8D\x98", 2); //lea ebx, [eax + 00000000]
+					write(hProc, (DWORD)pbCheck + 0x55, pAllocZF, 4); //Addr pAllocZF
+					writeMem(hProc, (DWORD)pbCheck + 0x59, (byte*)"\x0F\xB6\x1B", 3); //movzx ebx,byte ptr [ebx]
+					hookFunc(hProc, 0xE9, BaseZF_07 + 0x80BE2, (DWORD)pbCheck + 0x5C); //return to func
 
-					writeMem(hProc, (DWORD)pbCheck + 0x59, (byte*)"\x8D\x98", 2); //lea ebx, [eax + 00000000]
-					write(hProc, (DWORD)pbCheck + 0x5B, pAllocGame, 4); //Addr pAllocGame
-					writeMem(hProc, (DWORD)pbCheck + 0x5F, (byte*)"\x0F\xB6\x1B", 3); //movzx ebx,byte ptr [ebx]
-					hookFunc(hProc, 0xE9, BaseZF_07 + 0x80BE2, (DWORD)pbCheck + 0x62); //return to func
+					//cmp esi, 247FFF
+					writeMem(hProc, (DWORD)pbCheck + 0x61, (byte*)"\x8D\x98", 2); //lea ebx, [eax + 00000000]
+					write(hProc, (DWORD)pbCheck + 0x63, pAllocGame, 4); //Addr pAllocGame
+					writeMem(hProc, (DWORD)pbCheck + 0x67, (byte*)"\x0F\xB6\x1B", 3); //movzx ebx,byte ptr [ebx]
+					hookFunc(hProc, 0xE9, BaseZF_07 + 0x80BE2, (DWORD)pbCheck + 0x6A); //return to func
 
 					//cmp ecx,004E1C6D
-					writeMem(hProc, (DWORD)pbCheck + 0x67, (byte*)"\x8D\x98", 2);
-					write(hProc, (DWORD)pbCheck + 0x69, pAllocGame + 0xE0C6D, 4);
-					writeMem(hProc, (DWORD)pbCheck + 0x6D, (byte*)"\x0F\xB6\x1B", 3);
-					hookFunc(hProc, 0xE9, BaseZF_07 + 0x80BE2, (DWORD)pbCheck + 0x70); //return to func
+					writeMem(hProc, (DWORD)pbCheck + 0x6F, (byte*)"\x8D\x98", 2);
+					write(hProc, (DWORD)pbCheck + 0x71, pAllocGame + 0xE0C6D, 4);
+					writeMem(hProc, (DWORD)pbCheck + 0x75, (byte*)"\x0F\xB6\x1B", 3);
+					hookFunc(hProc, 0xE9, BaseZF_07 + 0x80BE2, (DWORD)pbCheck + 0x78); //return to func
 
 					//cmp ecx,004E1C15
-					writeMem(hProc, (DWORD)pbCheck + 0x75, (byte*)"\x8D\x98", 2);
-					write(hProc, (DWORD)pbCheck + 0x77, pAllocGame + 0xE0C15, 4);
-					writeMem(hProc, (DWORD)pbCheck + 0x7B, (byte*)"\x0F\xB6\x1B", 3);
-					hookFunc(hProc, 0xE9, BaseZF_07 + 0x80BE2, (DWORD)pbCheck + 0x7E); //return to func
+					writeMem(hProc, (DWORD)pbCheck + 0x7D, (byte*)"\x8D\x98", 2);
+					write(hProc, (DWORD)pbCheck + 0x7F, pAllocGame + 0xE0C15, 4);
+					writeMem(hProc, (DWORD)pbCheck + 0x83, (byte*)"\x0F\xB6\x1B", 3);
+					hookFunc(hProc, 0xE9, BaseZF_07 + 0x80BE2, (DWORD)pbCheck + 0x86); //return to func
 
 					//cmp ecx,0044F48F
-					writeMem(hProc, (DWORD)pbCheck + 0x83, (byte*)"\x8D\x98", 2);
-					write(hProc, (DWORD)pbCheck + 0x85, pAllocGame + 0x4E48F, 4);
-					writeMem(hProc, (DWORD)pbCheck + 0x89, (byte*)"\x0F\xB6\x1B", 3);
-					hookFunc(hProc, 0xE9, BaseZF_07 + 0x80BE2, (DWORD)pbCheck + 0x8C); //return to func
+					writeMem(hProc, (DWORD)pbCheck + 0x8B, (byte*)"\x8D\x98", 2);
+					write(hProc, (DWORD)pbCheck + 0x8D, pAllocGame + 0x4E48F, 4);
+					writeMem(hProc, (DWORD)pbCheck + 0x91, (byte*)"\x0F\xB6\x1B", 3);
+					hookFunc(hProc, 0xE9, BaseZF_07 + 0x80BE2, (DWORD)pbCheck + 0x94); //return to func
 
 					//cmp ecx,0044E9F0
-					writeMem(hProc, (DWORD)pbCheck + 0x91, (byte*)"\x8D\x98", 2);
-					write(hProc, (DWORD)pbCheck + 0x93, pAllocGame + 0x4D9F0, 4);
-					writeMem(hProc, (DWORD)pbCheck + 0x97, (byte*)"\x0F\xB6\x1B", 3);
-					hookFunc(hProc, 0xE9, BaseZF_07 + 0x80BE2, (DWORD)pbCheck + 0x9A); //return to func
+					writeMem(hProc, (DWORD)pbCheck + 0x99, (byte*)"\x8D\x98", 2);
+					write(hProc, (DWORD)pbCheck + 0x9B, pAllocGame + 0x4D9F0, 4);
+					writeMem(hProc, (DWORD)pbCheck + 0x9F, (byte*)"\x0F\xB6\x1B", 3);
+					hookFunc(hProc, 0xE9, BaseZF_07 + 0x80BE2, (DWORD)pbCheck + 0xA2); //return to func
 
 					//cmp ecx, 0041ED4F
-					writeMem(hProc, (DWORD)pbCheck + 0x9F, (byte*)"\x8D\x98", 2);
-					write(hProc, (DWORD)pbCheck + 0xA1, pAllocGame + 0x1DD4F, 4);
-					writeMem(hProc, (DWORD)pbCheck + 0xA5, (byte*)"\x0F\xB6\x1B", 3);
-					hookFunc(hProc, 0xE9, BaseZF_07 + 0x80BE2, (DWORD)pbCheck + 0xA8); //return to func
+					writeMem(hProc, (DWORD)pbCheck + 0xA7, (byte*)"\x8D\x98", 2);
+					write(hProc, (DWORD)pbCheck + 0xA9, pAllocGame + 0x1DD4F, 4);
+					writeMem(hProc, (DWORD)pbCheck + 0xAD, (byte*)"\x0F\xB6\x1B", 3);
+					hookFunc(hProc, 0xE9, BaseZF_07 + 0x80BE2, (DWORD)pbCheck + 0xB0); //return to func
 
 					//cmp ecx, 0041FE39
-					writeMem(hProc, (DWORD)pbCheck + 0xAD, (byte*)"\x8D\x98", 2);
-					write(hProc, (DWORD)pbCheck + 0xAF, pAllocGame + 0x1EE39, 4);
-					writeMem(hProc, (DWORD)pbCheck + 0xB3, (byte*)"\x0F\xB6\x1B", 3);
-					hookFunc(hProc, 0xE9, BaseZF_07 + 0x80BE2, (DWORD)pbCheck + 0xB6); //return to func
+					writeMem(hProc, (DWORD)pbCheck + 0xB5, (byte*)"\x8D\x98", 2);
+					write(hProc, (DWORD)pbCheck + 0xB7, pAllocGame + 0x1EE39, 4);
+					writeMem(hProc, (DWORD)pbCheck + 0xBB, (byte*)"\x0F\xB6\x1B", 3);
+					hookFunc(hProc, 0xE9, BaseZF_07 + 0x80BE2, (DWORD)pbCheck + 0xBE); //return to func
+
+					//cmp esi, 0x116EFE
+					writeMem(hProc, (DWORD)pbCheck + 0xC3, (byte*)"\x8D\x98", 2); //lea ebx, [eax + 00000000]
+					write(hProc, (DWORD)pbCheck + 0xC5, pAllocZF2, 4); //Addr pAllocZF2
+					writeMem(hProc, (DWORD)pbCheck + 0xC9, (byte*)"\x0F\xB6\x1B", 3); //movzx ebx,byte ptr [ebx]
+					hookFunc(hProc, 0xE9, BaseZF_07 + 0x80BE2, (DWORD)pbCheck + 0xCC); //return to func
 
 					//------------------------ Restaure ------------------------//
 
@@ -163,7 +174,7 @@ void memory() {
 						"\xFF\xB0\xF0\x01\x00\x00" //push [eax+000001F0] //target coordenate z
 						"\xFF\xB0\xEC\x01\x00\x00" //push [eax+000001EC] //target coordenate y
 						"\xFF\xB0\xE8\x01\x00\x00", 0x24); //push [eax+000001E8] //target coordenate x
-					hookFunc(hProc, 0xE8, 0x0040680D, (DWORD)pSkill + 0x2D); //dm_SendRange
+					hookFunc(hProc, 0xE8, 0x0040680D, (DWORD)pSkill + 0x2D); //dm_SelectRange
 
 					writeMem(hProc, (DWORD)pSkill + 0x32, (byte*)
 						"\xA1\xB4\xB9\x6A\x00" //mov eax,[006AB9B4]
@@ -206,6 +217,7 @@ void memory() {
 					writeMem(hProc, 0x0044E9F0, (byte*)"\xC3", 1); //CheckEnergyGraphError | Trava
 					writeMem(hProc, 0x004801C4, (byte*)"\xEB\x45", 2); //Drop core
 					writeMem(hProc, 0x004801C4 + 0x47, (byte*)"\x59\x90\x90\x90\x90", 5);
+					writeMem(hProc, BaseZF2_0A + 0x30910, (byte*)"\xc3", 1);
 
 					ResumeThread(hThread);
 
