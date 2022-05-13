@@ -101,12 +101,12 @@ void logx() {
 
 bool bRegister() {
 	DWORD dwSerialHD = 0; //variavel do serial do pc do usuario
-	DWORD dwSerialHD_Client[] = { -530791459, 318002682, -118114608 }; //vetor de cadastro de serial
+	DWORD dwSerialHD_Client[] = { -530791459, -58256848, 318002682, -118114608, 1022485426 }; //vetor de cadastro de serial
 	
 	if (!GetVolumeInformationA((char*)"C:\\", NULL, 0, &dwSerialHD, NULL, NULL, NULL, 0)) //pega o serial do disco C:
 		return FALSE;
 
-	for (int i = 0; i < 3; i++) { //até o tamanho do vetor
+	for (int i = 0; i < 5; i++) { //até o tamanho do vetor
 		if (to_string(dwSerialHD_Client[i]) == to_string(dwSerialHD)) //se o serial do vetor for igual ao serial do usuario, então..
 			return TRUE;
 	}

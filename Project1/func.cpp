@@ -122,14 +122,12 @@ void olhoMagic() {
 			y = readMem(hProc, chrOtherPlayer + 0x1DC, 4) - readMem(hProc, lpCurPlayer + 0x1EC, 4);
 			z = readMem(hProc, chrOtherPlayer + 0x1E0, 4) - readMem(hProc, lpCurPlayer + 0x1F0, 4);
 
-			if (abs(x) < 200000 && abs(z) < 200000) {
+			if (abs(x) < 226000 && abs(z) < 226000) {
 				if (sPlayerCheck == "") {
 					sPlayerCheck = "Alerta -> Player proximo avistado ao redor!";
 					bConsoleUpdate = true;
 				}
 			}
-			else
-				sPlayerCheck = "";
 		}
 
 		if (chrOtherPlayer < 0x1E46218)
