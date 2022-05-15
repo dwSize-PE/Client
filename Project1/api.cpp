@@ -64,7 +64,7 @@ void hookFunc(HANDLE hProc, DWORD opcode, DWORD dst, DWORD src, byte* Value, uns
 
 void HookFunc_2(HANDLE hProc, DWORD MyFunc, DWORD ToHook, byte* Value, unsigned int size)
 {
-	int Opcode = 0x840F;
+	int Opcode = 0x850F;
 	int Hook = DWORD(MyFunc) - DWORD(ToHook) - 6;
 
 	WriteProcessMemory(hProc, (void*)ToHook, &Opcode, 2, NULL);

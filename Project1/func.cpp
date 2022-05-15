@@ -50,7 +50,7 @@ void getTime() {
 	Min = ((GetTickCount() - Time) / 1000) / 60;
 
 	if (Min == 60)
-		Time2 = GetTickCount();
+		Time = GetTickCount();
 
 	Hour = ((GetTickCount() - Time2) / 1000) / 60;
 }
@@ -84,14 +84,14 @@ void hotkey() {
 			Sleep(200);
 		}
 
-		if (GetAsyncKeyState(0x33) & 0x8000) {
+		if (GetAsyncKeyState(0x34) & 0x8000) {
 			writeMem(hProc, 0x03396E0C, (byte*)"\x08", 1);
 
 			Beep(500, 500);
 			Sleep(200);
 		}
 
-		if (GetAsyncKeyState(0x34) & 0x8000) {
+		if (GetAsyncKeyState(0x33) & 0x8000) {
 			if (!bDano) {
 				sDanoStatus = "On";
 				bDano = true, bConsoleUpdate = true;
@@ -124,7 +124,7 @@ void olhoMagic() {
 
 			if (abs(x) < 226000 && abs(z) < 226000) {
 				if (sPlayerCheck == "") {
-					sPlayerCheck = "Alerta -> Player proximo avistado ao redor!";
+					sPlayerCheck = "\n\nAlerta -> Player proximo avistado ao redor!";
 					bConsoleUpdate = true;
 				}
 			}
@@ -150,8 +150,12 @@ void active_func() {
 		writeMem(hProc, 0x004E1C6D + 0x45, (byte*)"\x4", 1);
 	}
 
-	if (bDano)
-		write(hProc, (DWORD)pSkill + 0x82, 1, 1);
-	else
-		write(hProc, (DWORD)pSkill + 0x82, 0, 1);
+	if (bDano) {
+		write(hProc, (DWORD)pSkill + 0x97, 1, 1);
+		write(hProc, (DWORD)pSkill + 0x83, 2, 1);
+	}
+	else {
+		write(hProc, (DWORD)pSkill + 0x97, 0, 1);
+		write(hProc, (DWORD)pSkill + 0x83, 1, 1);
+	}
 }

@@ -158,11 +158,11 @@ void memory() {
 					pSkill = VirtualAllocEx(hProc, 0, 0x90, MEM_COMMIT | MEM_RESERVE, PAGE_EXECUTE_READWRITE);
 
 					hookFunc(hProc, 0xE9, (DWORD)pSkill, 0x0042C5EC); //Força Divina | Shaman
-					hookFunc(hProc, 0xE9, (DWORD)pSkill, 0x0042AB7B, (byte*)"\x90\x90", 2); //Silraphim | Mago
+					hookFunc(hProc, 0xE9, (DWORD)pSkill, 0x0042A7F9, (byte*)"\x90\x90", 2); //Meteoro | Mago
 					hookFunc(hProc, 0xE9, (DWORD)pSkill, 0x0042B48C, (byte*)"\x90\x90", 2); //Impacto | Sacer
 
 					writeMem(hProc, (DWORD)pSkill, (byte*)"\x80\x3D", 0x2);
-					write(hProc, (DWORD)pSkill + 0x2, (DWORD)pSkill + 0x82, 4);
+					write(hProc, (DWORD)pSkill + 0x2, (DWORD)pSkill + 0x97, 4);
 					write(hProc, (DWORD)pSkill + 0x6, 0, 1);
 					writeMem(hProc, (DWORD)pSkill + 0x7, (byte*)"\x74\x6D", 2);
 
@@ -193,8 +193,15 @@ void memory() {
 						"\xFF\xB1\xE8\x01\x00\x00", 0x3C); //push [ecx+000001E8] //target coordenate x
 					hookFunc(hProc, 0xE8, 0x0040783A, (DWORD)pSkill + 0x6E); //call dm_SendRangeDamage
 					writeMem(hProc, (DWORD)pSkill + 0x73, (byte*)"\x83\xC4\x38", 3); //add esp, 38
-
-					hookFunc(hProc, 0xE9, 0x0042CAF3, (DWORD)pSkill + 0x76); //return to func
+					writeMem(hProc, (DWORD)pSkill + 0x76, (byte*)"\x80\x05", 2);
+					write(hProc, (DWORD)pSkill + 0x78, (DWORD)pSkill + 0x98, 4);
+					writeMem(hProc, (DWORD)pSkill + 0x7C, (byte*)"\x01\x80\x3D", 3);
+					write(hProc, (DWORD)pSkill + 0x7F, (DWORD)pSkill + 0x98, 4);
+					write(hProc, (DWORD)pSkill + 0x83, 1, 1);
+					HookFunc_2(hProc, (DWORD)pSkill, (DWORD)pSkill + 0x84);
+					writeMem(hProc, (DWORD)pSkill + 0x8A, (byte*)"\xc6\x05", 2);
+					write(hProc, (DWORD)pSkill + 0x8C, (DWORD)pSkill + 0x98, 4);
+					hookFunc(hProc, 0xE9, 0x0042CAF3, (DWORD)pSkill + 0x91); //return to func
 
 					//------------------------ Hook Packets ------------------------//
 
