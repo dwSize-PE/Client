@@ -62,6 +62,7 @@ void permission() {
 
 				fprintf(f, "\n");
 				fclose(f);
+				f = 0;
 
 				bActive = false, bPatch = false, bPatchActive = false, bCopyGame = false, bhProc = false, bhThreadId = false;
 			}

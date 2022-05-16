@@ -157,7 +157,8 @@ void memory() {
 
 					pSkill = VirtualAllocEx(hProc, 0, 0x90, MEM_COMMIT | MEM_RESERVE, PAGE_EXECUTE_READWRITE);
 
-					hookFunc(hProc, 0xE9, (DWORD)pSkill, 0x0042C5EC); //Força Divina | Shaman
+					//hookFunc(hProc, 0xE9, (DWORD)pSkill, 0x0042C5EC); //Força Divina | Shaman
+					hookFunc(hProc, 0xE9, (DWORD)pSkill, 0x0042BF16); //Manha de Oracao | Shaman
 					hookFunc(hProc, 0xE9, (DWORD)pSkill, 0x0042A7F9, (byte*)"\x90\x90", 2); //Meteoro | Mago
 					hookFunc(hProc, 0xE9, (DWORD)pSkill, 0x0042B48C, (byte*)"\x90\x90", 2); //Impacto | Sacer
 

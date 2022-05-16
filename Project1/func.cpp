@@ -152,7 +152,7 @@ void active_func() {
 
 	if (bDano) {
 		write(hProc, (DWORD)pSkill + 0x97, 1, 1);
-		write(hProc, (DWORD)pSkill + 0x83, 2, 1);
+		write(hProc, (DWORD)pSkill + 0x83, 1, 1);
 	}
 	else {
 		write(hProc, (DWORD)pSkill + 0x97, 0, 1);
