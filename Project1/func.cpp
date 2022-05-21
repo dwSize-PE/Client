@@ -26,7 +26,6 @@ void func() {
 				sGameStatus = "Game Status -> Funcoes Liberadas!";
 
 				hotkey();
-				//olhoMagic();
 				active_func();
 			}
 			else {
@@ -146,7 +145,7 @@ void active_func() {
 	}
 }
 
-void olhoMagic() {
+void findPlayer() {
 	while (true) {
 		Sleep(100);
 		if (bPatchActive) {

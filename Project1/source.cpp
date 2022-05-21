@@ -5,7 +5,7 @@ using namespace std;
 extern void memory();
 extern void func();
 extern void autoClick();
-extern void olhoMagic();
+extern void findPlayer();
 
 extern HANDLE hProc, hThread;
 extern int Hour, Min;
@@ -129,7 +129,7 @@ int main() {
 		CreateThread(0, 0, (LPTHREAD_START_ROUTINE)memory, 0, 0, 0);
 		CreateThread(0, 0, (LPTHREAD_START_ROUTINE)func, 0, 0, 0);
 		CreateThread(0, 0, (LPTHREAD_START_ROUTINE)autoClick, 0, 0, 0);
-		CreateThread(0, 0, (LPTHREAD_START_ROUTINE)olhoMagic, 0, 0, 0);
+		CreateThread(0, 0, (LPTHREAD_START_ROUTINE)findPlayer, 0, 0, 0);
 
 		while (true)
 			menu();

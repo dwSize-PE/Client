@@ -8,4 +8,3 @@ void func();
 void hotkey();
 void getTime();
 void active_func();
-void olhoMagic();
