@@ -5,6 +5,7 @@ using namespace std;
 extern string sGameStatus;
 extern bool bConsoleUpdate;
 
+HWND hWnd = 0;
 HANDLE hProc = 0, hThread = 0;
 bool bActive;
 extern bool bPatch, bPatchActive, bCopyGame;
@@ -18,6 +19,9 @@ void permission() {
 	while (true) {
 		Sleep(200);
 		dwPid = getPid();
+
+		if (hWnd == 0)
+			hWnd = FindWindowA(0, "Priston Tale");
 
 		if (dwPid > 0) {
 			if (!bhProc) {
@@ -58,7 +62,7 @@ void permission() {
 			if (bhProc || bhThreadId) {
 				CloseHandle(hProc);
 				CloseHandle(hThread);
-				hProc = 0, hThread = 0;
+				hWnd = 0, hProc = 0, hThread = 0;
 
 				fprintf(f, "\n");
 				fclose(f);

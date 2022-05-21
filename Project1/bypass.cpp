@@ -7,7 +7,7 @@ extern string sGameStatus;
 extern bool bConsoleUpdate, bActive;
 
 bool bPatch, bPatchActive, bCopyGame;
-void* pSkill, * pLogs;
+void* pSkill, * pLogs, * pfield;
 
 void memory() {
 	int hooksGame, hooksGame2, codeGame;
@@ -204,6 +204,28 @@ void memory() {
 					writeMem(hProc, (DWORD)pSkill + 0x8A, (byte*)"\xc6\x05", 2);
 					write(hProc, (DWORD)pSkill + 0x8C, (DWORD)pSkill + 0x98, 4);
 					hookFunc(hProc, 0xE9, 0x0042CAF3, (DWORD)pSkill + 0x91); //return to func
+
+					//------------------------ Teleporte ------------------------//
+					void* ptelep = VirtualAllocEx(hProc, NULL, 0x30, MEM_COMMIT | MEM_RESERVE, PAGE_EXECUTE_READWRITE);
+					pfield = VirtualAllocEx(hProc, NULL, 0x4, MEM_COMMIT | MEM_RESERVE, PAGE_EXECUTE_READWRITE);
+
+					hookFunc(hProc, 0xE9, (DWORD)ptelep, 0x00410B0C);
+
+					writeMem(hProc, (DWORD)ptelep, (byte*)"\x83\x3d", 2);
+					write(hProc, (DWORD)ptelep + 0x2, (DWORD)pfield, 4); //cmp [field], 0
+					writeMem(hProc, (DWORD)ptelep + 0x7, (byte*)"\x74\x16", 2); //je 
+					writeMem(hProc, (DWORD)ptelep + 0x9, (byte*)"\xff\x35", 2);
+					write(hProc, (DWORD)ptelep + 0xB, (DWORD)pfield, 4); //push [field]
+					hookFunc(hProc, 0xE8, 0x00436BB5, (DWORD)ptelep + 0xF); //call WarpField2
+					writeMem(hProc, (DWORD)ptelep + 0x14, (byte*)"\x59", 10); //pop ecx
+					writeMem(hProc, (DWORD)ptelep + 0x15, (byte*)"\xc7\x05", 2);
+					write(hProc, (DWORD)ptelep + 0x17, (DWORD)pfield, 4); //mov [field], 0
+					write(hProc, (DWORD)ptelep + 0x1B, 0, 4);
+					writeMem(hProc, (DWORD)ptelep + 0x1F, (byte*)
+						"\x55" //push ebp
+						"\x8B\xEC" //mov ebp,esp
+						"\x83\xEC\x1C", 6); //sub esp, 1c
+					hookFunc(hProc, 0xE9, 0x00410B12, (DWORD)ptelep + 0x25);
 
 					//------------------------ Hook Packets ------------------------//
 

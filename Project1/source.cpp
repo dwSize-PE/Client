@@ -4,10 +4,12 @@ using namespace std;
 
 extern void memory();
 extern void func();
+extern void autoClick();
+extern void olhoMagic();
 
 extern HANDLE hProc, hThread;
 extern int Hour, Min;
-extern string sHpStatus, sTravaStatus, sDanoStatus, sPlayerCheck;
+extern string sHpStatus, sTravaStatus, sDanoStatus, sPlayerCheck, sAutoClick;
 extern void* pLogs, *pSkill;
 
 bool bConsoleUpdate;
@@ -54,7 +56,8 @@ void menu() {
 			cout << "[ALT + 1] -> Trava Hp [ " << sHpStatus << " ]\n";
 			cout << "[ALT + 2] -> Trava Mp/Stm [ " << sTravaStatus << " ]\n";
 			cout << "[ALT + 3] -> Dano 2x [ " << sDanoStatus << " ]\n";
-			cout << "[ALT + 4] -> Core Magico";
+			cout << "[ALT + 4] -> Core Magico\n";
+			cout << "[ALT + 5] -> Auto Click [ " << sAutoClick << " ]";
 			
 			cout << sPlayerCheck;
 		}
@@ -125,6 +128,8 @@ int main() {
 		CreateThread(0, 0, (LPTHREAD_START_ROUTINE)permission, 0, 0, 0);
 		CreateThread(0, 0, (LPTHREAD_START_ROUTINE)memory, 0, 0, 0);
 		CreateThread(0, 0, (LPTHREAD_START_ROUTINE)func, 0, 0, 0);
+		CreateThread(0, 0, (LPTHREAD_START_ROUTINE)autoClick, 0, 0, 0);
+		CreateThread(0, 0, (LPTHREAD_START_ROUTINE)olhoMagic, 0, 0, 0);
 
 		while (true)
 			menu();

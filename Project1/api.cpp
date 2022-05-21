@@ -132,3 +132,7 @@ DWORD readMem(HANDLE hProc, DWORD addr, int size) {
 	ReadProcessMemory(hProc, (void*)addr, &retorno, size, NULL);
 	return retorno;
 }
+
+void SendMsg(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam) {
+	SendMessageA(hWnd, Msg, wParam, lParam);
+}

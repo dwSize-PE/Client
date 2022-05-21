@@ -143,6 +143,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="api.cpp" />
+    <ClCompile Include="Auto.cpp" />
     <ClCompile Include="bypass.cpp" />
     <ClCompile Include="func.cpp" />
     <ClCompile Include="game.cpp" />
@@ -150,6 +151,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="api.h" />
+    <ClInclude Include="Auto.h" />
     <ClInclude Include="bypass.h" />
     <ClInclude Include="func.h" />
     <ClInclude Include="game.h" />

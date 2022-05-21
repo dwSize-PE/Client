@@ -12,3 +12,4 @@ int copy_paste(HANDLE hProc, DWORD addrCopy, void* addrPaste, int MAX_REGION);
 void writeMem(HANDLE hProc, DWORD addr, byte* value, int size);
 void write(HANDLE hProc, DWORD addr, int value, int size);
 DWORD readMem(HANDLE hProc, DWORD addr, int size);
+void SendMsg(HWND hWnd, UINT Msg, WPARAM wParam = 0, LPARAM lParam = 0);
