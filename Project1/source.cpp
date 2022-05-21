@@ -53,7 +53,7 @@ void menu() {
 			cout << "\n/------------------------------------------------------------------------------/\n";
 			cout << "[ALT + 1] -> Trava Hp [ " << sHpStatus << " ]\n";
 			cout << "[ALT + 2] -> Trava Mp/Stm [ " << sTravaStatus << " ]\n";
-			cout << "[ALT + 3] -> Dano 3x [ " << sDanoStatus << " ]\n";
+			cout << "[ALT + 3] -> Dano 2x [ " << sDanoStatus << " ]\n";
 			cout << "[ALT + 4] -> Core Magico";
 			
 			cout << sPlayerCheck;

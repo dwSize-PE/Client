@@ -114,8 +114,8 @@ void olhoMagic() {
 	for (int i = 0; i < 1024; i++) {
 		pMotionInfo = readMem(hProc, chrOtherPlayer + 0x4794, 4);
 
-		//Flag - smCHAR_STATE_USER - CHRMOTION_STATE_DEAD
-		if (readMem(hProc, chrOtherPlayer + 0x33C, 4) > 0 && readMem(hProc, chrOtherPlayer + 0x35C, 4) > 0 && readMem(hProc, chrOtherPlayer + 0x1D4, 4) > 0 && readMem(hProc, chrOtherPlayer + 0x39C4, 4) == 0x80 && readMem(hProc, pMotionInfo, 4) != 0x120) {
+		//Flag - PartyFlag - smCHAR_STATE_USER - CHRMOTION_STATE_DEAD
+		if (readMem(hProc, chrOtherPlayer + 0x33C, 4) > 0 && readMem(hProc, chrOtherPlayer + 0x35C, 4) > 0 && readMem(hProc, chrOtherPlayer + 0x1D4, 4) > 0 && readMem(hProc, chrOtherPlayer + 0x4898, 4) == 0 && readMem(hProc, chrOtherPlayer + 0x39C4, 4) == 0x80 && readMem(hProc, pMotionInfo, 4) != 0x120) {
 			
 			lpCurPlayer = readMem(hProc, 0xAFE60C, 4);
 			x = readMem(hProc, chrOtherPlayer + 0x1D8, 4) - readMem(hProc, lpCurPlayer + 0x1E8, 4);
@@ -152,7 +152,7 @@ void active_func() {
 
 	if (bDano) {
 		write(hProc, (DWORD)pSkill + 0x97, 1, 1);
-		write(hProc, (DWORD)pSkill + 0x83, 2, 1);
+		write(hProc, (DWORD)pSkill + 0x83, 1, 1);
 	}
 	else {
 		write(hProc, (DWORD)pSkill + 0x97, 0, 1);
