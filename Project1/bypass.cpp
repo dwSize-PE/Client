@@ -153,6 +153,10 @@ void memory() {
 					//CoreMagico
 					copy_paste(hProc, codeGame + 0x89434, (void*)0x0048A434, 0x6);
 					copy_paste(hProc, codeGame + 0x88C1D, (void*)0x00489C1D, 0x6);
+					//WarpField2
+					copy_paste(hProc, codeGame + 0x35BBB, (void*)0x00436BBB, 6);
+					//send2
+					copy_paste(hProc, codeGame + 0x5E5AA, (void*)0x0045F5AA, 6);
 
 					//------------------------ Damage ------------------------//
 
@@ -249,6 +253,7 @@ void memory() {
 					writeMem(hProc, 0x004801C4, (byte*)"\xEB\x45", 2); //Drop core
 					writeMem(hProc, 0x004801C4 + 0x47, (byte*)"\x59\x90\x90\x90\x90", 5);
 					//writeMem(hProc, BaseZF2_0A + 0x30910, (byte*)"\xc3", 1);
+					//writeMem(hProc, 0x005DF2D9, (byte*)"\xe9\x84\x00\x00\x00", 5); //Game Unsave
 
 					ResumeThread(hThread);
 
