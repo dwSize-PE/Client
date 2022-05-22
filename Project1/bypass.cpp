@@ -254,6 +254,7 @@ void memory() {
 					writeMem(hProc, 0x004801C4 + 0x47, (byte*)"\x59\x90\x90\x90\x90", 5);
 					//writeMem(hProc, BaseZF2_0A + 0x30910, (byte*)"\xc3", 1);
 					//writeMem(hProc, 0x005DF2D9, (byte*)"\xe9\x84\x00\x00\x00", 5); //Game Unsave
+					//writeMem(hProc, 0x0044D145, (byte*)"\xEB", 1); //CheckCharForm
 
 					ResumeThread(hThread);
 

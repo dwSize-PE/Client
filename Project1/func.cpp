@@ -11,9 +11,9 @@ int Time, Time2, Min, Hour;
 bool bHp, bTrava, bDano, bAutoClick;
 string sHpStatus, sTravaStatus, sDanoStatus, sPlayerCheck, sAutoClick;
 
-void func() {
-	int pUserData;
+int pUserData;
 
+void func() {
 	while (true) {
 		Sleep(200);
 		if (bPatchActive) {
@@ -116,6 +116,7 @@ void hotkey() {
 				bAutoClick = false, bConsoleUpdate = true;
 				Beep(500, 500);
 			}
+			Sleep(200);
 		}
 	}
 }
