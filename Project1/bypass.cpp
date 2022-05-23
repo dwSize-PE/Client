@@ -260,9 +260,9 @@ void memory() {
 						"\x52"
 						"\x50"
 						"\x6a\x00"
-						"\xff\xb0\xe0\x01\x00\x00"
-						"\xff\xb0\xdc\x01\x00\x00"
-						"\xff\xb0\xd8\x01\x00\x00", 0x1A);
+						"\xff\xb1\xe0\x01\x00\x00"
+						"\xff\xb1\xdc\x01\x00\x00"
+						"\xff\xb1\xd8\x01\x00\x00", 0x1A);
 					hookFunc(hProc, 0xE8, 0x0040783A, (DWORD)pDamage + 0x6A);
 					writeMem(hProc, (DWORD)pDamage + 0x6F, (byte*)
 						"\xc7\x05", 2);
