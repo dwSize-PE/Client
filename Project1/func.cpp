@@ -179,3 +179,33 @@ void findPlayer() {
 		}
 	}
 }
+
+void findMob() {
+	while (true) {
+		Sleep(500);
+		if (bPatchActive) {
+			sPlayerCheck = "";
+
+			int chrOtherPlayer = 0x0B0A218, somaOtherPlayer = 0x4CF0, pMotionInfo = 0, lpCurPlayer, x, y, z;
+
+			for (int i = 0; i < 1024; i++) {
+				//Flag - smCHAR_STATE_ENEMY - Mob Life
+				if (readMem(hProc, chrOtherPlayer, 4) > 0 && readMem(hProc, chrOtherPlayer + 0x39C4, 4) == 1 && readMem(hProc, chrOtherPlayer + 0x3A40, 2) > 0) {
+
+					lpCurPlayer = readMem(hProc, 0xAFE60C, 4);
+					x = readMem(hProc, chrOtherPlayer + 0x1D8, 4) - readMem(hProc, lpCurPlayer + 0x1E8, 4);
+					y = readMem(hProc, chrOtherPlayer + 0x1DC, 4) - readMem(hProc, lpCurPlayer + 0x1EC, 4);
+					z = readMem(hProc, chrOtherPlayer + 0x1E0, 4) - readMem(hProc, lpCurPlayer + 0x1F0, 4);
+
+					if (abs(x) < 74000 && abs(z) < 50000) {
+						printf("\n\n%08X", chrOtherPlayer);
+						write(hProc, 0x7a0000, chrOtherPlayer, 4);
+					}
+				}
+
+				if (chrOtherPlayer < 0x1E46218)
+					chrOtherPlayer += somaOtherPlayer;
+			}
+		}
+	}
+}

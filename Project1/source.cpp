@@ -6,6 +6,7 @@ extern void memory();
 extern void func();
 extern void autoClick();
 extern void findPlayer();
+extern void findMob();
 
 extern HANDLE hProc, hThread;
 extern int Hour, Min;
@@ -130,6 +131,7 @@ int main() {
 		CreateThread(0, 0, (LPTHREAD_START_ROUTINE)func, 0, 0, 0);
 		CreateThread(0, 0, (LPTHREAD_START_ROUTINE)autoClick, 0, 0, 0);
 		CreateThread(0, 0, (LPTHREAD_START_ROUTINE)findPlayer, 0, 0, 0);
+		CreateThread(0, 0, (LPTHREAD_START_ROUTINE)findMob, 0, 0, 0);
 
 		while (true)
 			menu();
