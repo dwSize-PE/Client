@@ -7,7 +7,7 @@ extern string sGameStatus;
 extern bool bConsoleUpdate, bActive;
 
 bool bPatch, bPatchActive, bCopyGame;
-void* pSkill, * pLogs, * pfield;
+void* pSkill, * pLogs, * pfield, * pMob;
 
 void memory() {
 	int hooksGame, hooksGame2, codeGame;
@@ -210,7 +210,7 @@ void memory() {
 					hookFunc(hProc, 0xE9, 0x0042CAF3, (DWORD)pSkill + 0x91); //return to func
 
 					//------------------------ Teleporte ------------------------//
-					void* ptelep = VirtualAllocEx(hProc, NULL, 0x30, MEM_COMMIT | MEM_RESERVE, PAGE_EXECUTE_READWRITE);
+					void* ptelep = VirtualAllocEx(hProc, NULL, 0x50, MEM_COMMIT | MEM_RESERVE, PAGE_EXECUTE_READWRITE);
 					pfield = VirtualAllocEx(hProc, NULL, 0x4, MEM_COMMIT | MEM_RESERVE, PAGE_EXECUTE_READWRITE);
 
 					hookFunc(hProc, 0xE9, (DWORD)ptelep, 0x00410B0C);
@@ -225,11 +225,56 @@ void memory() {
 					writeMem(hProc, (DWORD)ptelep + 0x15, (byte*)"\xc7\x05", 2);
 					write(hProc, (DWORD)ptelep + 0x17, (DWORD)pfield, 4); //mov [field], 0
 					write(hProc, (DWORD)ptelep + 0x1B, 0, 4);
-					writeMem(hProc, (DWORD)ptelep + 0x1F, (byte*)
-						"\x55" //push ebp
-						"\x8B\xEC" //mov ebp,esp
-						"\x83\xEC\x1C", 6); //sub esp, 1c
-					hookFunc(hProc, 0xE9, 0x00410B12, (DWORD)ptelep + 0x25);
+
+					//------------------------ dm_SendTransDamage ------------------------//
+					void* pDamage = (void*)((DWORD)ptelep + 0x1F);
+					pMob = VirtualAllocEx(hProc, NULL, 0x4, MEM_COMMIT | MEM_RESERVE, PAGE_EXECUTE_READWRITE);
+
+					writeMem(hProc, (DWORD)pDamage, (byte*)"\x83\x3d", 2);
+					write(hProc, (DWORD)pDamage + 0x2, (DWORD)pMob, 4); //cmp [pMob]
+					writeMem(hProc, (DWORD)pDamage + 0x7, (byte*)"\x74\x73", 2); //je
+					writeMem(hProc, (DWORD)pDamage + 0x9, (byte*)"\xA1", 1);
+					write(hProc, (DWORD)pDamage + 0xA, (DWORD)pMob, 4); //mov [pMob]
+					writeMem(hProc, (DWORD)pDamage + 0xE, (byte*)
+						"\x6a\x00"
+						"\x68\xc8\x00\x00\x00"
+						"\xff\xb0\xe0\x01\x00\x00"
+						"\xff\xb0\xdc\x01\x00\x00"
+						"\xff\xb0\xd8\x01\x00\x00", 0x19);
+					hookFunc(hProc, 0xE8, 0x0040680D, (DWORD)pDamage + 0x27);
+
+					writeMem(hProc, (DWORD)pDamage + 0x2C, (byte*)"\xA1", 1);
+					write(hProc, (DWORD)pDamage + 0x2D, 0x006AB9B4, 4);
+					writeMem(hProc, (DWORD)pDamage + 0x31, (byte*)
+						"\x68\x4d\x01\x00\x00"
+						"\x69\xc0\x14\x03\x00\x00"
+						"\x0f\xbf\x90", 0xE);
+					write(hProc, (DWORD)pDamage + 0x3F, 0x033B2926, 4);
+					writeMem(hProc, (DWORD)pDamage + 0x43, (byte*)"\x0f\xbf\x80", 3);
+					write(hProc, (DWORD)pDamage + 0x46, 0x033B2926 - 0x2, 4);
+					writeMem(hProc, (DWORD)pDamage + 0x4A, (byte*)"\x8b\x0d", 2);
+					write(hProc, (DWORD)pDamage + 0x4C, (DWORD)pMob, 4);
+					writeMem(hProc, (DWORD)pDamage + 0x50, (byte*)
+						"\x6a\x00"
+						"\x6a\x00"
+						"\x52"
+						"\x50"
+						"\x6a\x00"
+						"\xff\xb0\xe0\x01\x00\x00"
+						"\xff\xb0\xdc\x01\x00\x00"
+						"\xff\xb0\xd8\x01\x00\x00", 0x1A);
+					hookFunc(hProc, 0xE8, 0x0040783A, (DWORD)pDamage + 0x6A);
+					writeMem(hProc, (DWORD)pDamage + 0x6F, (byte*)
+						"\xc7\x05", 2);
+					write(hProc, (DWORD)pDamage + 0x71, (DWORD)pMob, 4);
+					writeMem(hProc, (DWORD)pDamage + 0x75, (byte*)
+						"\x00\x00\x00\x00"
+						"\x83\xc4\x38"
+						"\x55"
+						"\x8b\xec"
+						"\x83\xec\x1c", 0xD);
+
+					hookFunc(hProc, 0xE9, 0x00410B12, (DWORD)pDamage + 0x82);
 
 					//------------------------ Hook Packets ------------------------//
 

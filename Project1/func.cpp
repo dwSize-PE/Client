@@ -3,12 +3,12 @@
 extern HANDLE hProc;
 extern string sGameStatus;
 extern bool bPatchActive, bConsoleUpdate;
-extern void* pSkill;
+extern void* pSkill, * pMob;
 
 bool bGetTime;
 int Time, Time2, Min, Hour;
 
-bool bHp, bTrava, bDano, bAutoClick;
+bool bHp, bTrava, bDano, bAutoClick, bBot;
 string sHpStatus, sTravaStatus, sDanoStatus, sPlayerCheck, sAutoClick;
 
 int pUserData;
@@ -118,6 +118,18 @@ void hotkey() {
 			}
 			Sleep(200);
 		}
+
+		if (GetAsyncKeyState(0x36) & 0x8000) {
+			if (!bBot) {
+				Beep(500, 500);
+				bBot = true;
+			}
+			else {
+				Beep(500, 500);
+				bBot = false;
+			}
+			Sleep(200);
+		}
 	}
 }
 
@@ -182,10 +194,8 @@ void findPlayer() {
 
 void findMob() {
 	while (true) {
-		Sleep(500);
+		Sleep(600);
 		if (bPatchActive) {
-			sPlayerCheck = "";
-
 			int chrOtherPlayer = 0x0B0A218, somaOtherPlayer = 0x4CF0, pMotionInfo = 0, lpCurPlayer, x, y, z;
 
 			for (int i = 0; i < 1024; i++) {
@@ -199,7 +209,8 @@ void findMob() {
 
 					if (abs(x) < 74000 && abs(z) < 50000) {
 						printf("\n\n%08X", chrOtherPlayer);
-						write(hProc, 0x7a0000, chrOtherPlayer, 4);
+						if (bBot)
+							write(hProc, (DWORD)pMob, chrOtherPlayer, 4);
 					}
 				}
 
