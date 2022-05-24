@@ -107,7 +107,7 @@ void hotkey() {
 		if (GetAsyncKeyState(0x35) & 0x8000) {
 			if (!bAutoClick) {
 				sAutoClick = "On";
-				bAutoClick = true, bConsoleUpdate = true;
+				//bAutoClick = true, bConsoleUpdate = true;
 				Beep(500, 500);
 			}
 			else
@@ -122,7 +122,7 @@ void hotkey() {
 		if (GetAsyncKeyState(0x36) & 0x8000) {
 			if (!bBot) {
 				Beep(500, 500);
-				bBot = true;
+				//bBot = true;
 			}
 			else {
 				Beep(500, 500);
@@ -208,7 +208,7 @@ void findMob() {
 					z = readMem(hProc, chrOtherPlayer + 0x1E0, 4) - readMem(hProc, lpCurPlayer + 0x1F0, 4);
 
 					if (abs(x) < 74000 && abs(z) < 50000) {
-						printf("\n\n%08X", chrOtherPlayer);
+						//printf("\n\n%08X", chrOtherPlayer);
 						if (bBot)
 							write(hProc, (DWORD)pMob, chrOtherPlayer, 4);
 					}
