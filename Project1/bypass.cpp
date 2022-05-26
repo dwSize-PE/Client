@@ -34,7 +34,7 @@ void memory() {
 			else if (hooksGame == 0xE9) {
 				//Retorna a Base Addr do endereço dinamico alocado pelo ZF
 				int BaseZF_07 = aobScan(hProc, 0, 0x132000);
-				int BaseZF2_0A = aobScan(hProc, 0, 0x124000);
+				int BaseZF2_0A = aobScan(hProc, 0, 0x125000);
 				int refBase_07 = 0x80C84;
 
 				//Se encontrar..
@@ -165,7 +165,7 @@ void memory() {
 					//hookFunc(hProc, 0xE9, (DWORD)pSkill, 0x0042C5EC); //Força Divina | Shaman
 					hookFunc(hProc, 0xE9, (DWORD)pSkill, 0x0042BF16); //Manha de Oracao | Shaman
 					hookFunc(hProc, 0xE9, (DWORD)pSkill, 0x0042A7F9, (byte*)"\x90\x90", 2); //Meteoro | Mago
-					hookFunc(hProc, 0xE9, (DWORD)pSkill, 0x0042B48C, (byte*)"\x90\x90", 2); //Impacto | Sacer
+					//hookFunc(hProc, 0xE9, (DWORD)pSkill, 0x0042B48C, (byte*)"\x90\x90", 2); //Impacto | Sacer
 
 					writeMem(hProc, (DWORD)pSkill, (byte*)"\x80\x3D", 0x2);
 					write(hProc, (DWORD)pSkill + 0x2, (DWORD)pSkill + 0x97, 4);
@@ -306,7 +306,7 @@ void memory() {
 					bPatch = true, bPatchActive = true;
 				}
 				else {
-					sGameStatus = "Game Status -> Error ao realizar varredura na sessao .code!";
+					sGameStatus = "Game Status -> Cheat desatualizado!";
 					bConsoleUpdate = true, bPatch = true;
 				}
 			}

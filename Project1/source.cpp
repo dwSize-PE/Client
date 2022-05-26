@@ -58,7 +58,7 @@ void menu() {
 			cout << "[ALT + 2] -> Trava Mp/Stm [ " << sTravaStatus << " ]\n";
 			cout << "[ALT + 3] -> Dano 2x [ " << sDanoStatus << " ]\n";
 			cout << "[ALT + 4] -> Core Magico\n";
-			//cout << "[ALT + 5] -> Auto Click [ " << sAutoClick << " ]";
+			cout << "[ALT + 5] -> Auto Click [ " << sAutoClick << " ]";
 			
 			cout << sPlayerCheck;
 		}
@@ -105,12 +105,12 @@ void logx() {
 
 bool bRegister() {
 	DWORD dwSerialHD = 0; //variavel do serial do pc do usuario
-	DWORD dwSerialHD_Client[] = { -530791459, -58256848, 1049092675, -522589021, 318002682, -118114608, 1022485426, 1083714008 }; //vetor de cadastro de serial
+	DWORD dwSerialHD_Client[] = { -530791459, -58256848, 318002682, -118114608, 1022485426, 1083714008, 951041491 }; //vetor de cadastro de serial
 	
 	if (!GetVolumeInformationA((char*)"C:\\", NULL, 0, &dwSerialHD, NULL, NULL, NULL, 0)) //pega o serial do disco C:
 		return FALSE;
 
-	for (int i = 0; i < 8; i++) { //até o tamanho do vetor
+	for (int i = 0; i < 7; i++) { //até o tamanho do vetor
 		if (to_string(dwSerialHD_Client[i]) == to_string(dwSerialHD)) //se o serial do vetor for igual ao serial do usuario, então..
 			return TRUE;
 	}

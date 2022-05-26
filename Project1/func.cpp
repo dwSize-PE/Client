@@ -2,7 +2,7 @@
 
 extern HANDLE hProc;
 extern string sGameStatus;
-extern bool bPatchActive, bConsoleUpdate;
+extern bool bPatchActive, bConsoleUpdate, bTelep, bGirarTela;
 extern void* pSkill, * pMob;
 
 bool bGetTime;
@@ -32,7 +32,7 @@ void func() {
 				sGameStatus = "Game Status -> Aguardando login ingame..";
 
 				sHpStatus = "Off", sTravaStatus = "Off", sDanoStatus = "Off", sAutoClick = "Off";
-				bHp = false, bTrava = false, bDano = false, bAutoClick = false, bGetTime = false;
+				bHp = false, bTrava = false, bDano = false, bAutoClick = false, bBot = false, bTelep = false, bGirarTela = false, bGetTime = false;
 			}
 		}
 	}
@@ -106,14 +106,21 @@ void hotkey() {
 
 		if (GetAsyncKeyState(0x35) & 0x8000) {
 			if (!bAutoClick) {
-				sAutoClick = "On";
-				//bAutoClick = true, bConsoleUpdate = true;
 				Beep(500, 500);
+
+				if (MessageBoxA(0, "Deseja ativar o Teleporte Automatico?", "", MB_ICONQUESTION | MB_YESNO) == IDYES)
+					bTelep = true;
+
+				if (MessageBox(0, "Deseja girar a tela?", "", MB_ICONQUESTION | MB_YESNO) == IDYES)
+					bGirarTela = true;
+
+				sAutoClick = "On";
+				bAutoClick = true, bConsoleUpdate = true;
 			}
 			else
 			{
 				sAutoClick = "Off";
-				bAutoClick = false, bConsoleUpdate = true;
+				bAutoClick = false, bTelep = false, bGirarTela = false, bConsoleUpdate = true;
 				Beep(500, 500);
 			}
 			Sleep(200);
