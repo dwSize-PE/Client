@@ -154,6 +154,11 @@ void hotkey() {
 
 		if (GetAsyncKeyState(0x37) & 0x8000) {
 			if (!bSendRangeDamage) {
+				if (MessageBoxA(0, "Meteoro ou Bola de Fogo?", "", MB_ICONQUESTION | MB_YESNO) == IDYES)
+					write(hProc, (DWORD)pDamage + 0x32, 0x4D, 1);
+				else
+					write(hProc, (DWORD)pDamage + 0x32, 0x1D, 1);
+
 				if (!bTelep)
 					if (MessageBoxA(0, "Deseja ativar o Teleporte Automatico?", "", MB_ICONQUESTION | MB_YESNO) == IDYES)
 						bTelep = true;
@@ -287,11 +292,6 @@ void findMob() {
 								writeMem(hProc, (DWORD)pDamage + 0x33, (byte*)"\x09", 1);
 							else if (Level >= 35 && Level < 70 || Level >= 88)
 								writeMem(hProc, (DWORD)pDamage + 0x33, (byte*)"\x0A", 1);
-
-
-							//	write(hProc, (DWORD)pDamage + 0x32, 0x4D, 1);
-							//else
-								write(hProc, (DWORD)pDamage + 0x32, 0x4D, 1);
 
 							write(hProc, (DWORD)pMob, chrOtherPlayer, 4);
 						}
