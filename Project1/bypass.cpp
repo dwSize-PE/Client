@@ -7,7 +7,7 @@ extern string sGameStatus;
 extern bool bConsoleUpdate, bActive;
 
 bool bPatch, bPatchActive, bCopyGame;
-void* pSkill, * pLogs, * pfield, * pMob, * pMob2, * pDamage, * pRank;
+void* pSkill, * pLogs, * pfield, * pMob, * pMob2, * pDamage, * pMinMaxDamage, * pRank;
 
 void memory() {
 	int hooksGame, hooksGame2, codeGame;
@@ -233,6 +233,7 @@ void memory() {
 					//------------------------ dm_SendRangeDamage ------------------------//
 					pDamage = (void*)((DWORD)ptelep + 0x1F);
 					pMob = VirtualAllocEx(hProc, NULL, 0x4, MEM_COMMIT | MEM_RESERVE, PAGE_EXECUTE_READWRITE);
+					pMinMaxDamage = VirtualAllocEx(hProc, NULL, 0x4, MEM_COMMIT | MEM_RESERVE, PAGE_EXECUTE_READWRITE);
 
 					writeMem(hProc, (DWORD)pDamage, (byte*)"\x83\x3d", 2);
 					write(hProc, (DWORD)pDamage + 0x2, (DWORD)pMob, 4); //cmp [pMob]
@@ -253,9 +254,9 @@ void memory() {
 						"\x68\x1d\x01\x00\x00"
 						"\x69\xc0\x14\x03\x00\x00"
 						"\x0f\xbf\x90", 0xE);
-					write(hProc, (DWORD)pDamage + 0x3F, 0x033B2926, 4);
+					write(hProc, (DWORD)pDamage + 0x3F, (DWORD)pMinMaxDamage + 0x2, 4);
 					writeMem(hProc, (DWORD)pDamage + 0x43, (byte*)"\x0f\xbf\x80", 3);
-					write(hProc, (DWORD)pDamage + 0x46, 0x033B2926 - 0x2, 4);
+					write(hProc, (DWORD)pDamage + 0x46, (DWORD)pMinMaxDamage, 4);
 					writeMem(hProc, (DWORD)pDamage + 0x4A, (byte*)"\x8b\x0d", 2);
 					write(hProc, (DWORD)pDamage + 0x4C, (DWORD)pMob, 4);
 					writeMem(hProc, (DWORD)pDamage + 0x50, (byte*)

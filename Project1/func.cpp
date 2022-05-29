@@ -3,7 +3,7 @@
 extern HANDLE hProc;
 extern string sGameStatus;
 extern bool bPatchActive, bConsoleUpdate, bGirarTela;
-extern void* pSkill, * pMob, * pMob2, * pDamage, * pfield, * pRank;
+extern void* pSkill, * pMob, * pMob2, * pDamage, *pMinMaxDamage, * pfield, * pRank;
 
 bool bGetTime;
 int Time, Time2, Min, Hour;
@@ -154,10 +154,24 @@ void hotkey() {
 
 		if (GetAsyncKeyState(0x37) & 0x8000) {
 			if (!bSendRangeDamage) {
-				if (MessageBoxA(0, "Meteoro ou Bola de Fogo?", "", MB_ICONQUESTION | MB_YESNO) == IDYES)
+				if (MessageBoxA(0, "Meteoro ou Bola de Fogo?", "", MB_ICONQUESTION | MB_YESNO) == IDYES) {
+					write(hProc, (DWORD)pDamage + 0x3E, 0x15, 1);
+					write(hProc, (DWORD)pDamage + 0x45, 0x05, 1);
+
+					write(hProc, (DWORD)pMinMaxDamage, 457, 2); //Min
+					write(hProc, (DWORD)pMinMaxDamage + 0x2, 469, 2); //Max
+
 					write(hProc, (DWORD)pDamage + 0x32, 0x4D, 1);
-				else
+				}
+				else {
+					write(hProc, (DWORD)pDamage + 0x3E, 0x90, 1);
+					write(hProc, (DWORD)pDamage + 0x45, 0x80, 1);
+
+					write(hProc, (DWORD)pMinMaxDamage, readMem(hProc, 0x033B2924, 2), 2); //Min
+					write(hProc, (DWORD)pMinMaxDamage + 0x2, readMem(hProc, 0x033B2926, 2), 2); //Max
+
 					write(hProc, (DWORD)pDamage + 0x32, 0x1D, 1);
+				}
 
 				if (!bTelep)
 					if (MessageBoxA(0, "Deseja ativar o Teleporte Automatico?", "", MB_ICONQUESTION | MB_YESNO) == IDYES)
@@ -296,7 +310,7 @@ void findMob() {
 							write(hProc, (DWORD)pMob, chrOtherPlayer, 4);
 						}
 
-						Sleep(600);
+						Sleep(800);
 					}
 				}
 
