@@ -2,14 +2,14 @@
 
 extern HANDLE hProc;
 extern string sGameStatus;
-extern bool bPatchActive, bConsoleUpdate, bTelep, bGirarTela;
-extern void* pSkill, * pMob;
+extern bool bPatchActive, bConsoleUpdate, bGirarTela;
+extern void* pSkill, * pMob, * pMob2, * pDamage, * pfield, * pRank;
 
 bool bGetTime;
 int Time, Time2, Min, Hour;
 
-bool bHp, bTrava, bDano, bAutoClick, bBot;
-string sHpStatus, sTravaStatus, sDanoStatus, sPlayerCheck, sAutoClick;
+bool bHp, bTrava, bDano, bAutoClick, bTelep, bSendTransDamage, bSendRangeDamage;
+string sHpStatus, sTravaStatus, sDanoStatus, sPlayerCheck, sAutoClick, sTransDamage, sRangeDamage;
 
 int pUserData;
 
@@ -31,8 +31,8 @@ void func() {
 			else {
 				sGameStatus = "Game Status -> Aguardando login ingame..";
 
-				sHpStatus = "Off", sTravaStatus = "Off", sDanoStatus = "Off", sAutoClick = "Off";
-				bHp = false, bTrava = false, bDano = false, bAutoClick = false, bBot = false, bTelep = false, bGirarTela = false, bGetTime = false;
+				sHpStatus = "Off", sTravaStatus = "Off", sDanoStatus = "Off", sAutoClick = "Off", sTransDamage = "0ff", sRangeDamage = "Off";
+				bHp = false, bTrava = false, bDano = false, bAutoClick = false, bSendTransDamage = false, bSendRangeDamage = false, bTelep = false, bGirarTela = false, bGetTime = false;
 			}
 		}
 	}
@@ -104,12 +104,20 @@ void hotkey() {
 			Sleep(200);
 		}
 
+		if (GetAsyncKeyState(0x54) & 0x8000) { //T
+			write(hProc, (DWORD)pRank, 1, 4);
+
+			Beep(500, 500);
+			Sleep(200);
+		}
+
 		if (GetAsyncKeyState(0x35) & 0x8000) {
 			if (!bAutoClick) {
 				Beep(500, 500);
 
-				if (MessageBoxA(0, "Deseja ativar o Teleporte Automatico?", "", MB_ICONQUESTION | MB_YESNO) == IDYES)
-					bTelep = true;
+				if(!bTelep)
+					if (MessageBoxA(0, "Deseja ativar o Teleporte Automatico?", "", MB_ICONQUESTION | MB_YESNO) == IDYES)
+						bTelep = true;
 
 				if (MessageBox(0, "Deseja girar a tela?", "", MB_ICONQUESTION | MB_YESNO) == IDYES)
 					bGirarTela = true;
@@ -127,13 +135,37 @@ void hotkey() {
 		}
 
 		if (GetAsyncKeyState(0x36) & 0x8000) {
-			if (!bBot) {
+			if (!bSendTransDamage) {
+				if(!bTelep)
+					if (MessageBoxA(0, "Deseja ativar o Teleporte Automatico?", "", MB_ICONQUESTION | MB_YESNO) == IDYES)
+						bTelep = true;
+
+				sTransDamage = "On";
 				Beep(500, 500);
-				//bBot = true;
+				bSendTransDamage = true, bConsoleUpdate = true;
 			}
 			else {
+				sTransDamage = "Off";
 				Beep(500, 500);
-				bBot = false;
+				bSendTransDamage = false, bTelep = false, bConsoleUpdate = true;
+			}
+			Sleep(200);
+		}
+
+		if (GetAsyncKeyState(0x37) & 0x8000) {
+			if (!bSendRangeDamage) {
+				if (!bTelep)
+					if (MessageBoxA(0, "Deseja ativar o Teleporte Automatico?", "", MB_ICONQUESTION | MB_YESNO) == IDYES)
+						bTelep = true;
+
+				sRangeDamage = "On";
+				Beep(500, 500);
+				bSendRangeDamage = true, bConsoleUpdate = true;
+			}
+			else {
+				sRangeDamage = "Off";
+				Beep(500, 500);
+				bSendRangeDamage = false, bTelep = false, bConsoleUpdate = true;
 			}
 			Sleep(200);
 		}
@@ -186,8 +218,21 @@ void findPlayer() {
 					//printf("\n\n%08X", chrOtherPlayer);
 
 					if (abs(x) < 136000 && abs(z) < 137000) {
+						//printf("\n\n%08X", chrOtherPlayer);
 						if (sPlayerCheck == "") {
 							sPlayerCheck = "\n\nAlerta -> Player proximo avistado ao redor!";
+
+							if (bTelep) {
+								Beep(500, 500);
+
+								sAutoClick = "Off";
+								sTransDamage = "Off";
+								sRangeDamage = "Off";
+								bAutoClick = false, bSendTransDamage = false, bSendRangeDamage = false, bTelep = false, bGirarTela = false;
+								write(hProc, (DWORD)pfield, 3, 4);
+							}
+							else
+								write(hProc, (DWORD)pfield, 0, 4);
 						}
 					}
 				}
@@ -201,7 +246,7 @@ void findPlayer() {
 
 void findMob() {
 	while (true) {
-		Sleep(600);
+		Sleep(100);
 		if (bPatchActive) {
 			int chrOtherPlayer = 0x0B0A218, somaOtherPlayer = 0x4CF0, pMotionInfo = 0, lpCurPlayer, x, y, z;
 
@@ -216,8 +261,42 @@ void findMob() {
 
 					if (abs(x) < 74000 && abs(z) < 50000) {
 						//printf("\n\n%08X", chrOtherPlayer);
-						if (bBot)
+						if (bSendTransDamage)
+							write(hProc, (DWORD)pMob2, chrOtherPlayer - 0x10, 4);
+
+						if (bSendRangeDamage) {
+							int Level = readMem(hProc, pUserData + 0xB8, 4);
+
+							if (Level >= 17 && Level < 19 || Level >= 70 && Level < 72)
+								writeMem(hProc, (DWORD)pDamage + 0x33, (byte*)"\x01", 1);
+							else if (Level >= 19 && Level < 21 || Level >= 72 && Level < 74)
+								writeMem(hProc, (DWORD)pDamage + 0x33, (byte*)"\x02", 1);
+							else if (Level >= 21 && Level < 23 || Level >= 74 && Level < 76)
+								writeMem(hProc, (DWORD)pDamage + 0x33, (byte*)"\x03", 1);
+							else if (Level >= 23 && Level < 25 || Level >= 76 && Level < 78)
+								writeMem(hProc, (DWORD)pDamage + 0x33, (byte*)"\x04", 1);
+							else if (Level >= 25 && Level < 27 || Level >= 78 && Level < 80)
+								writeMem(hProc, (DWORD)pDamage + 0x33, (byte*)"\x05", 1);
+							else if (Level >= 27 && Level < 29 || Level >= 80 && Level < 82)
+								writeMem(hProc, (DWORD)pDamage + 0x33, (byte*)"\x06", 1);
+							else if (Level >= 29 && Level < 31 || Level >= 82 && Level < 84)
+								writeMem(hProc, (DWORD)pDamage + 0x33, (byte*)"\x07", 1);
+							else if (Level >= 31 && Level < 33 || Level >= 84 && Level < 86)
+								writeMem(hProc, (DWORD)pDamage + 0x33, (byte*)"\x08", 1);
+							else if (Level >= 33 && Level < 35 || Level >= 86 && Level < 88)
+								writeMem(hProc, (DWORD)pDamage + 0x33, (byte*)"\x09", 1);
+							else if (Level >= 35 && Level < 70 || Level >= 88)
+								writeMem(hProc, (DWORD)pDamage + 0x33, (byte*)"\x0A", 1);
+
+
+							//	write(hProc, (DWORD)pDamage + 0x32, 0x4D, 1);
+							//else
+								write(hProc, (DWORD)pDamage + 0x32, 0x4D, 1);
+
 							write(hProc, (DWORD)pMob, chrOtherPlayer, 4);
+						}
+
+						Sleep(600);
 					}
 				}
 

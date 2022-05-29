@@ -10,7 +10,7 @@ extern void findMob();
 
 extern HANDLE hProc, hThread;
 extern int Hour, Min;
-extern string sHpStatus, sTravaStatus, sDanoStatus, sPlayerCheck, sAutoClick;
+extern string sHpStatus, sTravaStatus, sDanoStatus, sPlayerCheck, sAutoClick, sTransDamage, sRangeDamage;
 extern void* pLogs, *pSkill;
 
 bool bConsoleUpdate;
@@ -58,7 +58,10 @@ void menu() {
 			cout << "[ALT + 2] -> Trava Mp/Stm [ " << sTravaStatus << " ]\n";
 			cout << "[ALT + 3] -> Dano 2x [ " << sDanoStatus << " ]\n";
 			cout << "[ALT + 4] -> Core Magico\n";
-			cout << "[ALT + 5] -> Auto Click [ " << sAutoClick << " ]";
+			cout << "[ALT + T] -> Tier Up\n";
+			cout << "[ALT + 5] -> Auto Click [ " << sAutoClick << " ]\n";
+			cout << "[ALT + 6] -> Send Trans Damage [ " << sTransDamage << " ]\n";
+			cout << "[ALT + 7] -> Send Range Damage [ " << sRangeDamage << " ]";
 			
 			cout << sPlayerCheck;
 		}
@@ -105,7 +108,7 @@ void logx() {
 
 bool bRegister() {
 	DWORD dwSerialHD = 0; //variavel do serial do pc do usuario
-	DWORD dwSerialHD_Client[] = { -530791459, -58256848, 318002682, -118114608, 1022485426, 1083714008, 951041491 }; //vetor de cadastro de serial
+	DWORD dwSerialHD_Client[] = { -530791459, 1549416226, 318002682, -118114608, 1195459648, 1083714008, 951041491 }; //vetor de cadastro de serial
 	
 	if (!GetVolumeInformationA((char*)"C:\\", NULL, 0, &dwSerialHD, NULL, NULL, NULL, 0)) //pega o serial do disco C:
 		return FALSE;

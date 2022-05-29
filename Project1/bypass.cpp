@@ -7,7 +7,7 @@ extern string sGameStatus;
 extern bool bConsoleUpdate, bActive;
 
 bool bPatch, bPatchActive, bCopyGame;
-void* pSkill, * pLogs, * pfield, * pMob;
+void* pSkill, * pLogs, * pfield, * pMob, * pMob2, * pDamage, * pRank;
 
 void memory() {
 	int hooksGame, hooksGame2, codeGame;
@@ -157,6 +157,10 @@ void memory() {
 					copy_paste(hProc, codeGame + 0x35BBB, (void*)0x00436BBB, 6);
 					//send2
 					copy_paste(hProc, codeGame + 0x5E5AA, (void*)0x0045F5AA, 6);
+					//ChangeJobFace
+					copy_paste(hProc, codeGame + 0x4CBAF, (void*)0x0044DBAF, 0x9D);
+					//ReformCharForm
+					copy_paste(hProc, codeGame + 0x4C122, (void*)0x0044D122, 0x5);
 
 					//------------------------ Damage ------------------------//
 
@@ -226,8 +230,8 @@ void memory() {
 					write(hProc, (DWORD)ptelep + 0x17, (DWORD)pfield, 4); //mov [field], 0
 					write(hProc, (DWORD)ptelep + 0x1B, 0, 4);
 
-					//------------------------ dm_SendTransDamage ------------------------//
-					void* pDamage = (void*)((DWORD)ptelep + 0x1F);
+					//------------------------ dm_SendRangeDamage ------------------------//
+					pDamage = (void*)((DWORD)ptelep + 0x1F);
 					pMob = VirtualAllocEx(hProc, NULL, 0x4, MEM_COMMIT | MEM_RESERVE, PAGE_EXECUTE_READWRITE);
 
 					writeMem(hProc, (DWORD)pDamage, (byte*)"\x83\x3d", 2);
@@ -246,7 +250,7 @@ void memory() {
 					writeMem(hProc, (DWORD)pDamage + 0x2C, (byte*)"\xA1", 1);
 					write(hProc, (DWORD)pDamage + 0x2D, 0x006AB9B4, 4);
 					writeMem(hProc, (DWORD)pDamage + 0x31, (byte*)
-						"\x68\x4d\x01\x00\x00"
+						"\x68\x1d\x01\x00\x00"
 						"\x69\xc0\x14\x03\x00\x00"
 						"\x0f\xbf\x90", 0xE);
 					write(hProc, (DWORD)pDamage + 0x3F, 0x033B2926, 4);
@@ -269,12 +273,56 @@ void memory() {
 					write(hProc, (DWORD)pDamage + 0x71, (DWORD)pMob, 4);
 					writeMem(hProc, (DWORD)pDamage + 0x75, (byte*)
 						"\x00\x00\x00\x00"
-						"\x83\xc4\x38"
+						"\x83\xc4\x38", 0x7);
+
+					//------------------------ dm_SendTransDamage ------------------------//
+					void* pTransDamage = (void*)((DWORD)pDamage + 0x7C);
+					pMob2 = VirtualAllocEx(hProc, NULL, 0x4, MEM_COMMIT | MEM_RESERVE, PAGE_EXECUTE_READWRITE);
+
+					writeMem(hProc, (DWORD)pTransDamage, (byte*)"\x83\x3d", 2);
+					write(hProc, (DWORD)pTransDamage + 0x2, (DWORD)pMob2, 4);
+					writeMem(hProc, (DWORD)pTransDamage + 0x7, (byte*)"\x74\x26", 2);
+					writeMem(hProc, (DWORD)pTransDamage + 0x9, (byte*)
+						"\x6a\x00"
+						"\x6a\x01"
+						"\x6a\x00"
+						"\x6a\x00"
+						"\x6a\x00"
+						"\x6a\x00"
+						"\x6a\x00"
+						"\xff\x35", 0x10);
+					write(hProc, (DWORD)pTransDamage + 0x19, (DWORD)pMob2, 4);
+					hookFunc(hProc, 0xE8, (DWORD)0x004073B9, (DWORD)pTransDamage + 0x1D);
+					writeMem(hProc, (DWORD)pTransDamage + 0x22, (byte*)
+						"\xc7\x05", 2);
+					write(hProc, (DWORD)pTransDamage + 0x24, (DWORD)pMob2, 4);
+
+					writeMem(hProc, (DWORD)pTransDamage + 0x2C, (byte*)
+						"\x83\xc4\x20", 0x3);
+
+					//------------------------ Tier Up ------------------------//
+					void* tierup = (void*)((DWORD)pTransDamage + 0x2F);
+					pRank = VirtualAllocEx(hProc, NULL, 0x4, MEM_COMMIT | MEM_RESERVE, PAGE_EXECUTE_READWRITE);
+
+					writeMem(hProc, (DWORD)tierup, (byte*)"\x83\x3d", 2);
+					write(hProc, (DWORD)tierup + 0x2, (DWORD)pRank, 4); //cmp dword ptr [007A0000],00
+					writeMem(hProc, (DWORD)tierup + 0x7, (byte*)"\x74\x28\xa1", 3); //je
+					write(hProc, (DWORD)tierup + 0xa, 0x33DED30, 4); //mov eax,[033DED30]
+					writeMem(hProc, (DWORD)tierup + 0xe, (byte*)"\x8b\x88\x74\x01\x00\x00", 0x6); //mov ecx,[eax+00000174]
+					writeMem(hProc, (DWORD)tierup + 0x14, (byte*)
+						"\x83\xf9\x03" //cmp ecx,03
+						"\x7f\x18" //jg
+						"\x83\xc1\x01" //add ecx,01
+						"\x89\x88\x74\x01\x00\x00", 0xe); //mov [eax+00000174],ecx
+					hookFunc(hProc, 0xE8, 0x0044DBAF, (DWORD)tierup + 0x22); //call ChangeJobFace
+					writeMem(hProc, (DWORD)tierup + 0x27, (byte*)"\xc7\x05", 2);
+					write(hProc, (DWORD)tierup + 0x29, (DWORD)pRank, 4);
+					writeMem(hProc, (DWORD)tierup + 0x31, (byte*)
 						"\x55"
 						"\x8b\xec"
-						"\x83\xec\x1c", 0xD);
+						"\x83\xec\x1c", 0x6);
 
-					hookFunc(hProc, 0xE9, 0x00410B12, (DWORD)pDamage + 0x82);
+					hookFunc(hProc, 0xE9, 0x00410B12, (DWORD)tierup + 0x37);
 
 					//------------------------ Hook Packets ------------------------//
 
@@ -297,6 +345,8 @@ void memory() {
 					writeMem(hProc, 0x0044E9F0, (byte*)"\xC3", 1); //CheckEnergyGraphError | Trava
 					writeMem(hProc, 0x004801C4, (byte*)"\xEB\x45", 2); //Drop core
 					writeMem(hProc, 0x004801C4 + 0x47, (byte*)"\x59\x90\x90\x90\x90", 5);
+					writeMem(hProc, (DWORD)BaseZF_07 + 0x130E3F, (byte*)"\x90\x90\x90\x90\x90", 5); //Desabilita leitura na UserData
+					writeMem(hProc, 0x00407362, (byte*)"\xEB", 1);
 					//writeMem(hProc, BaseZF2_0A + 0x30910, (byte*)"\xc3", 1);
 					//writeMem(hProc, 0x005DF2D9, (byte*)"\xe9\x84\x00\x00\x00", 5); //Game Unsave
 					//writeMem(hProc, 0x0044D145, (byte*)"\xEB", 1); //CheckCharForm
