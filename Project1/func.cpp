@@ -104,13 +104,6 @@ void hotkey() {
 			Sleep(200);
 		}
 
-		if (GetAsyncKeyState(0x54) & 0x8000) { //T
-			write(hProc, (DWORD)pRank, 1, 4);
-
-			Beep(500, 500);
-			Sleep(200);
-		}
-
 		if (GetAsyncKeyState(0x35) & 0x8000) {
 			if (!bAutoClick) {
 				Beep(500, 500);
@@ -131,6 +124,13 @@ void hotkey() {
 				bAutoClick = false, bTelep = false, bGirarTela = false, bConsoleUpdate = true;
 				Beep(500, 500);
 			}
+			Sleep(200);
+		}
+
+		if (GetAsyncKeyState(0x54) & 0x8000) { //T
+			write(hProc, (DWORD)pRank, 1, 4);
+
+			Beep(500, 500);
 			Sleep(200);
 		}
 
@@ -158,8 +158,8 @@ void hotkey() {
 					write(hProc, (DWORD)pDamage + 0x3E, 0x15, 1);
 					write(hProc, (DWORD)pDamage + 0x45, 0x05, 1);
 
-					write(hProc, (DWORD)pMinMaxDamage, 457, 2); //Min
-					write(hProc, (DWORD)pMinMaxDamage + 0x2, 469, 2); //Max
+					write(hProc, (DWORD)pMinMaxDamage, 1457, 2); //Min
+					write(hProc, (DWORD)pMinMaxDamage + 0x2, 1469, 2); //Max
 
 					write(hProc, (DWORD)pDamage + 0x32, 0x4D, 1);
 				}
@@ -217,9 +217,16 @@ void active_func() {
 }
 
 void findPlayer() {
+	bool bTimeTelep = false, bLol = false;
+	int update_time = 0;
+
 	while (true) {
 		Sleep(100);
 		if (bPatchActive) {
+			if (bTimeTelep)
+				if (clock() - update_time > 30000)
+					bLol = true;
+
 			sPlayerCheck = "";
 
 			int chrOtherPlayer = 0x0B0A218, somaOtherPlayer = 0x4CF0, pMotionInfo = 0, lpCurPlayer, x, y, z;
@@ -241,14 +248,19 @@ void findPlayer() {
 						if (sPlayerCheck == "") {
 							sPlayerCheck = "\n\nAlerta -> Player proximo avistado ao redor!";
 
-							if (bTelep) {
+							if (!bTimeTelep) {
+								update_time = clock();
+								bTimeTelep = true;
+							}
+
+							if (bTelep && bLol) {
 								Beep(500, 500);
 
 								sAutoClick = "Off";
 								sTransDamage = "Off";
 								sRangeDamage = "Off";
-								bAutoClick = false, bSendTransDamage = false, bSendRangeDamage = false, bTelep = false, bGirarTela = false;
-								write(hProc, (DWORD)pfield, 3, 4);
+								bAutoClick = false, bSendTransDamage = false, bSendRangeDamage = false, bTelep = false, bGirarTela = false, bTimeTelep = false, bLol = false;
+								write(hProc, (DWORD)pfield, 21, 4);
 							}
 							else
 								write(hProc, (DWORD)pfield, 0, 4);

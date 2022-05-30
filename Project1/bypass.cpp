@@ -225,13 +225,13 @@ void memory() {
 					writeMem(hProc, (DWORD)ptelep + 0x9, (byte*)"\xff\x35", 2);
 					write(hProc, (DWORD)ptelep + 0xB, (DWORD)pfield, 4); //push [field]
 					hookFunc(hProc, 0xE8, 0x00436BB5, (DWORD)ptelep + 0xF); //call WarpField2
-					writeMem(hProc, (DWORD)ptelep + 0x14, (byte*)"\x59", 10); //pop ecx
-					writeMem(hProc, (DWORD)ptelep + 0x15, (byte*)"\xc7\x05", 2);
-					write(hProc, (DWORD)ptelep + 0x17, (DWORD)pfield, 4); //mov [field], 0
-					write(hProc, (DWORD)ptelep + 0x1B, 0, 4);
+					writeMem(hProc, (DWORD)ptelep + 0x14, (byte*)"\x83\xC4\x04", 3); //add esp, 4
+					writeMem(hProc, (DWORD)ptelep + 0x17, (byte*)"\xc7\x05", 2);
+					write(hProc, (DWORD)ptelep + 0x19, (DWORD)pfield, 4); //mov [field], 0
+					write(hProc, (DWORD)ptelep + 0x1D, 0, 4);
 
 					//------------------------ dm_SendRangeDamage ------------------------//
-					pDamage = (void*)((DWORD)ptelep + 0x1F);
+					pDamage = (void*)((DWORD)ptelep + 0x21);
 					pMob = VirtualAllocEx(hProc, NULL, 0x4, MEM_COMMIT | MEM_RESERVE, PAGE_EXECUTE_READWRITE);
 					pMinMaxDamage = VirtualAllocEx(hProc, NULL, 0x4, MEM_COMMIT | MEM_RESERVE, PAGE_EXECUTE_READWRITE);
 
