@@ -5,7 +5,7 @@ extern string sGameStatus;
 extern bool bPatchActive, bConsoleUpdate, bGirarTela;
 extern void* pSkill, * pMob, * pMob2, * pDamage, *pMinMaxDamage, * pfield, * pRank;
 
-bool bGetTime;
+bool bGetTime, bTimeTelep;
 int Time, Time2, Min, Hour;
 
 bool bHp, bTrava, bDano, bAutoClick, bTelep, bSendTransDamage, bSendRangeDamage;
@@ -109,8 +109,9 @@ void hotkey() {
 				Beep(500, 500);
 
 				if(!bTelep)
-					if (MessageBoxA(0, "Deseja ativar o Teleporte Automatico?", "", MB_ICONQUESTION | MB_YESNO) == IDYES)
+					if (MessageBoxA(0, "Deseja ativar o Teleporte Automatico?", "", MB_ICONQUESTION | MB_YESNO) == IDYES) {
 						bTelep = true;
+					}
 
 				if (MessageBox(0, "Deseja girar a tela?", "", MB_ICONQUESTION | MB_YESNO) == IDYES)
 					bGirarTela = true;
@@ -121,7 +122,7 @@ void hotkey() {
 			else
 			{
 				sAutoClick = "Off";
-				bAutoClick = false, bTelep = false, bGirarTela = false, bConsoleUpdate = true;
+				bAutoClick = false, bTelep = false, bTimeTelep = false, bGirarTela = false, bConsoleUpdate = true;
 				Beep(500, 500);
 			}
 			Sleep(200);
@@ -147,7 +148,7 @@ void hotkey() {
 			else {
 				sTransDamage = "Off";
 				Beep(500, 500);
-				bSendTransDamage = false, bTelep = false, bConsoleUpdate = true;
+				bSendTransDamage = false, bTelep = false, bTimeTelep = false, bConsoleUpdate = true;
 			}
 			Sleep(200);
 		}
@@ -184,7 +185,7 @@ void hotkey() {
 			else {
 				sRangeDamage = "Off";
 				Beep(500, 500);
-				bSendRangeDamage = false, bTelep = false, bConsoleUpdate = true;
+				bSendRangeDamage = false, bTelep = false, bTimeTelep = false, bConsoleUpdate = true;
 			}
 			Sleep(200);
 		}
@@ -217,15 +218,25 @@ void active_func() {
 }
 
 void findPlayer() {
-	bool bTimeTelep = false, bLol = false;
 	int update_time = 0;
 
 	while (true) {
 		Sleep(100);
 		if (bPatchActive) {
-			if (bTimeTelep)
-				if (clock() - update_time > 30000)
-					bLol = true;
+			if (bTimeTelep) {
+				if (clock() - update_time > 30000) {
+
+					if (bTelep) {
+						Beep(500, 500);
+						sAutoClick = "Off", sTransDamage = "Off", sRangeDamage = "Off";
+						bAutoClick = false, bSendTransDamage = false, bSendRangeDamage = false, bGirarTela = false, bTelep = false, bTimeTelep = false;
+
+						write(hProc, (DWORD)pfield, 21, 4);
+					}
+					else
+						write(hProc, (DWORD)pfield, 0, 4);
+				}
+			}
 
 			sPlayerCheck = "";
 
@@ -241,31 +252,22 @@ void findPlayer() {
 					x = readMem(hProc, chrOtherPlayer + 0x1D8, 4) - readMem(hProc, lpCurPlayer + 0x1E8, 4);
 					y = readMem(hProc, chrOtherPlayer + 0x1DC, 4) - readMem(hProc, lpCurPlayer + 0x1EC, 4);
 					z = readMem(hProc, chrOtherPlayer + 0x1E0, 4) - readMem(hProc, lpCurPlayer + 0x1F0, 4);
-					//printf("\n\n%08X", chrOtherPlayer);
 
 					if (abs(x) < 136000 && abs(z) < 137000) {
 						//printf("\n\n%08X", chrOtherPlayer);
 						if (sPlayerCheck == "") {
 							sPlayerCheck = "\n\nAlerta -> Player proximo avistado ao redor!";
 
-							if (!bTimeTelep) {
+							if (!bTimeTelep && bTelep) {
 								update_time = clock();
+
 								bTimeTelep = true;
+								break;
 							}
-
-							if (bTelep && bLol) {
-								Beep(500, 500);
-
-								sAutoClick = "Off";
-								sTransDamage = "Off";
-								sRangeDamage = "Off";
-								bAutoClick = false, bSendTransDamage = false, bSendRangeDamage = false, bTelep = false, bGirarTela = false, bTimeTelep = false, bLol = false;
-								write(hProc, (DWORD)pfield, 21, 4);
-							}
-							else
-								write(hProc, (DWORD)pfield, 0, 4);
 						}
 					}
+					else
+						bTimeTelep = false;
 				}
 
 				if (chrOtherPlayer < 0x1E46218)

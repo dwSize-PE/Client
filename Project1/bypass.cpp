@@ -221,7 +221,7 @@ void memory() {
 
 					writeMem(hProc, (DWORD)ptelep, (byte*)"\x83\x3d", 2);
 					write(hProc, (DWORD)ptelep + 0x2, (DWORD)pfield, 4); //cmp [field], 0
-					writeMem(hProc, (DWORD)ptelep + 0x7, (byte*)"\x74\x16", 2); //je 
+					writeMem(hProc, (DWORD)ptelep + 0x7, (byte*)"\x74\x18", 2); //je 
 					writeMem(hProc, (DWORD)ptelep + 0x9, (byte*)"\xff\x35", 2);
 					write(hProc, (DWORD)ptelep + 0xB, (DWORD)pfield, 4); //push [field]
 					hookFunc(hProc, 0xE8, 0x00436BB5, (DWORD)ptelep + 0xF); //call WarpField2
